@@ -1,6 +1,6 @@
-import 'package:flutter_starter/home/view/home_page.dart';
-import 'package:flutter_starter/login/view/login_page.dart';
-import 'package:flutter_starter/splash/view/splash_page.dart';
+import 'package:school_app/home/view/home_page.dart';
+import 'package:school_app/login/view/login_page.dart';
+import 'package:school_app/splash/view/splash_page.dart';
 import 'package:go_router/go_router.dart';
 
 /// Path and name constants for all app routes.

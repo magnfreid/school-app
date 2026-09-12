@@ -3,8 +3,8 @@ import 'dart:developer' as developer;
 import 'package:auth_repository/auth_repository.dart';
 import 'package:bloc_utils/bloc_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_starter/login/bloc/login_event.dart';
-import 'package:flutter_starter/login/bloc/login_state.dart';
+import 'package:school_app/login/bloc/login_event.dart';
+import 'package:school_app/login/bloc/login_state.dart';
 
 export 'login_event.dart';
 export 'login_state.dart';

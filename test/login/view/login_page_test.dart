@@ -1,8 +1,8 @@
 import 'package:auth_repository/auth_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_starter/auth/cubit/auth_cubit.dart';
-import 'package:flutter_starter/l10n/app_localizations.dart';
-import 'package:flutter_starter/login/view/login_page.dart';
+import 'package:school_app/auth/cubit/auth_cubit.dart';
+import 'package:school_app/l10n/app_localizations.dart';
+import 'package:school_app/login/view/login_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/app_harness.dart';

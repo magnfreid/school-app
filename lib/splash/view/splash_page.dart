@@ -1,6 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_starter/l10n/extensions/app_localizations_extension.dart';
+import 'package:school_app/l10n/extensions/app_localizations_extension.dart';
 
 /// Loading screen shown while auth state is being determined.
 ///

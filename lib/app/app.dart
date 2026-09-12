@@ -1,11 +1,11 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_starter/app/cubit/theme_cubit.dart';
-import 'package:flutter_starter/app/router/app_router.dart';
-import 'package:flutter_starter/auth/cubit/auth_cubit.dart';
-import 'package:flutter_starter/l10n/app_localizations.dart';
-import 'package:flutter_starter/l10n/extensions/app_localizations_extension.dart';
+import 'package:school_app/app/cubit/theme_cubit.dart';
+import 'package:school_app/app/router/app_router.dart';
+import 'package:school_app/auth/cubit/auth_cubit.dart';
+import 'package:school_app/l10n/app_localizations.dart';
+import 'package:school_app/l10n/extensions/app_localizations_extension.dart';
 import 'package:go_router/go_router.dart';
 
 /// Root of the widget tree.

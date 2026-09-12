@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_starter/app/router/routes.dart';
-import 'package:flutter_starter/auth/cubit/auth_cubit.dart';
+import 'package:school_app/app/router/routes.dart';
+import 'package:school_app/auth/cubit/auth_cubit.dart';
 import 'package:go_router/go_router.dart';
 
 /// App-level router composition.

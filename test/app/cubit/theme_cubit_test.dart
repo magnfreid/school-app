@@ -1,6 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_starter/app/cubit/theme_cubit.dart';
+import 'package:school_app/app/cubit/theme_cubit.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

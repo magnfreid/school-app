@@ -2,8 +2,8 @@ import 'package:app_ui/app_ui.dart';
 import 'package:auth_repository/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_starter/l10n/extensions/app_localizations_extension.dart';
-import 'package:flutter_starter/login/bloc/login_bloc.dart';
+import 'package:school_app/l10n/extensions/app_localizations_extension.dart';
+import 'package:school_app/login/bloc/login_bloc.dart';
 
 /// Sign-in screen. Provides [LoginBloc] and delegates rendering to [LoginView].
 class LoginPage extends StatelessWidget {

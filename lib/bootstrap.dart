@@ -5,9 +5,9 @@ import 'package:auth_repository/auth_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_starter/app/app.dart';
-import 'package:flutter_starter/app/cubit/theme_cubit.dart';
-import 'package:flutter_starter/auth/cubit/auth_cubit.dart';
+import 'package:school_app/app/app.dart';
+import 'package:school_app/app/cubit/theme_cubit.dart';
+import 'package:school_app/auth/cubit/auth_cubit.dart';
 
 /// Global [BlocObserver] used in debug mode only.
 class _AppBlocObserver extends BlocObserver {
