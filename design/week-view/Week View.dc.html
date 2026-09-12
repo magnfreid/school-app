@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet"><style>*{box-sizing:border-box}body{margin:0;background:#0e0f12;font-family:Roboto,system-ui,sans-serif}a{color:#ff8a80}a:hover{color:#ffb4ab}</style></helmet>
+<div style="filter:{{ dimFilter }}">
+<div data-screen-label="Week view" style="width:1024px;height:768px;background:#0e0f12;color:#e4e1e9;display:flex;flex-direction:column;font-family:Roboto,system-ui,sans-serif">
+
+<div style="height:56px;flex:none;display:flex;align-items:center;gap:14px;padding:0 20px">
+<div style="font:500 21px/1 Roboto">Vecka 38</div>
+<div style="font:300 17px/1 Roboto;color:#8e8e98">14–18 september</div>
+<div style="display:flex;gap:6px;margin-left:8px">
+<div style="width:48px;height:44px;display:grid;place-items:center"><svg width="31" height="22" viewBox="0 0 28 20" fill="#fff"><path d="M27 7.5H13V3L2 10l11 7v-4.5h14z"></path></svg></div>
+<div style="width:48px;height:44px;display:grid;place-items:center"><svg width="31" height="22" viewBox="0 0 28 20" fill="#fff"><path d="M1 7.5h14V3l11 7-11 7v-4.5H1z"></path></svg></div>
+</div>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:7px"><div style="width:7px;height:7px;border-radius:4px;background:#5c9c72"></div><div style="font:300 15px/1 Roboto;color:#8e8e98">Uppdaterad 07:38</div></div>
+<div style="display:flex;gap:6px;margin-left:14px">
+<div style="width:44px;height:44px;border-radius:22px;display:grid;place-items:center;background:#1c1d22"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#8e8e98" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg></div>
+<div style="width:44px;height:44px;border-radius:22px;display:grid;place-items:center;background:#1c1d22"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#8e8e98" stroke-width="1.8"><circle cx="12" cy="12" r="3.2"></circle><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"></path></svg></div>
+</div>
+</div>
+
+<div style="flex:none;height:138px;margin:4px 18px 0;display:flex;align-items:center;gap:22px;padding:0 24px 0 22px;border-radius:4px;background:#191a1f;border-left:4px solid #e0483c">
+<div style="flex:1;min-width:0">
+<div style="height:24px;display:flex;align-items:center;gap:12px">
+<div style="font:500 12px/1 Roboto;letter-spacing:2.6px;color:#ff8a80">NÄSTA · PROV</div>
+<sc-if value="{{ showCountdown }}" hint-placeholder-val="{{ true }}"><div style="padding:4px 10px;border-radius:12px;border:1px solid #4a4b54;font:400 13px/1 Roboto;color:#a8a8b2">3 dagar kvar</div></sc-if>
+</div>
+<div style="font:400 44px/1.1 Roboto;margin-top:8px;color:#fff">Ekvationer</div>
+<div style="font:300 21px/1 Roboto;margin-top:9px;color:#a8a8b2">MA · Matematik</div>
+</div>
+<div style="flex:none;text-align:right">
+<div style="font:400 40px/1 Roboto;color:#fff">Torsdag</div>
+<div style="font:300 20px/1 Roboto;margin-top:8px;color:#a8a8b2">17 sep · 10:00</div>
+</div>
+</div>
+
+<div style="flex:none;margin:12px 18px 0;display:flex;flex-direction:column;gap:6px">
+<div style="height:38px;display:flex;align-items:center;gap:13px;padding:0 18px;border-radius:3px;background:#12514a">
+<div style="font:500 11px/1 Roboto;letter-spacing:2.2px;color:#7fd9c4">HELA VECKAN</div>
+<div style="font:400 18px/1 Roboto;color:#d9f5ee">Temavecka: Hållbarhet</div>
+</div>
+<div style="height:32px;display:grid;grid-template-columns:repeat(5,1fr);gap:9px">
+<div></div><div></div>
+<div style="border-radius:3px;background:#5a3d0c;display:flex;align-items:center;justify-content:center;gap:8px"><span style="font:500 10px/1 Roboto;letter-spacing:1.8px;color:#f5c46b">HELDAG</span><span style="font:400 16px/1 Roboto;color:#ffe9c2">Friluftsdag</span></div>
+<div></div><div></div>
+</div>
+</div>
+
+<div style="flex:1;min-height:0;margin:14px 18px 18px;display:grid;grid-template-columns:repeat(5,1fr);gap:9px">
+
+<div style="display:flex;flex-direction:column;gap:7px;min-width:0">
+<div style="flex:none;height:52px;position:relative;display:flex;flex-direction:column;justify-content:center;padding-left:4px">
+<svg viewBox="0 0 150 52" preserveAspectRatio="none" style="position:absolute;left:-6px;top:-2px;width:126px;height:56px;overflow:visible" fill="none" stroke="#e0483c" stroke-width="2.6" stroke-linecap="round" opacity=".95"><path d="M28 7 C9 10 3 24 6 35 C9 46 34 50 70 49 C108 48 140 41 142 28 C144 16 118 5 80 4 C56 3 34 5 22 11"></path></svg>
+<div style="font:500 16px/1 Roboto;letter-spacing:1.2px;color:#fff;position:relative">MÅN</div>
+<div style="font:300 14px/1 Roboto;color:#a8a8b2;margin-top:5px;position:relative">14 sep</div>
+</div>
+<div style="flex:none;border-radius:4px;background:#1c1d22;padding:9px 12px"><div style="font:500 11px/1 Roboto;letter-spacing:1.6px;color:#8e8e98">MA · LÄXA</div><div style="font:400 19px/1.25 Roboto;margin-top:5px;color:#e4e1e9">Läs s. 44–51</div></div>
+<div style="flex:none;border-radius:4px;background:#1c1d22;padding:9px 12px"><div style="font:500 11px/1 Roboto;letter-spacing:1.6px;color:#8e8e98">SO · INLÄMNING · 23:59</div><div style="font:400 19px/1.25 Roboto;margin-top:5px;color:#e4e1e9">Källkritik</div></div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:7px;min-width:0">
+<div style="flex:none;height:52px;display:flex;flex-direction:column;justify-content:center;padding-left:4px;border-bottom:1px solid #33343b"><div style="font:500 16px/1 Roboto;letter-spacing:1.2px;color:#c9c6cf">TIS</div><div style="font:300 14px/1 Roboto;color:#8e8e98;margin-top:5px">15 sep</div></div>
+<div style="flex:none;border-radius:4px;background:#1c1d22;padding:9px 12px"><div style="font:500 11px/1 Roboto;letter-spacing:1.6px;color:#8e8e98">SV · LÄXA</div><div style="font:400 19px/1.25 Roboto;margin-top:5px;color:#e4e1e9">Läs s. 12–30</div></div>
+<div style="flex:none;border-radius:4px;background:#1c1d22;padding:9px 12px"><div style="font:500 11px/1 Roboto;letter-spacing:1.6px;color:#8e8e98">IDH</div><div style="font:400 19px/1.25 Roboto;margin-top:5px;color:#e4e1e9">Ta med simkläder</div></div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:7px;min-width:0">
+<div style="flex:none;height:52px;display:flex;flex-direction:column;justify-content:center;padding-left:4px;border-bottom:1px solid #33343b"><div style="font:500 16px/1 Roboto;letter-spacing:1.2px;color:#c9c6cf">ONS</div><div style="font:300 14px/1 Roboto;color:#8e8e98;margin-top:5px">16 sep</div></div>
+<div style="flex:none;border-radius:4px;background:#1c1d22;padding:9px 12px"><div style="font:500 11px/1 Roboto;letter-spacing:1.6px;color:#8e8e98">SV · LÄXA</div><div style="font:400 19px/1.25 Roboto;margin-top:5px;color:#e4e1e9">Skriv novell, kap 3</div></div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:7px;min-width:0">
+<div style="flex:none;height:52px;display:flex;flex-direction:column;justify-content:center;padding-left:4px;border-bottom:1px solid #33343b"><div style="font:500 16px/1 Roboto;letter-spacing:1.2px;color:#c9c6cf">TORS</div><div style="font:300 14px/1 Roboto;color:#8e8e98;margin-top:5px">17 sep</div></div>
+<div style="flex:none;border-radius:4px;background:#26181a;padding:9px 12px;border-left:4px solid #e0483c"><div style="font:500 11px/1 Roboto;letter-spacing:1.6px;color:#ff8a80">MA · PROV · 10:00</div><div style="font:400 19px/1.25 Roboto;margin-top:5px;color:#ffe2de">Ekvationer</div></div>
+<div style="flex:none;border-radius:4px;background:#1c1d22;padding:9px 12px"><div style="font:500 11px/1 Roboto;letter-spacing:1.6px;color:#8e8e98">MS · LÄXA</div><div style="font:400 19px/1.25 Roboto;margin-top:5px;color:#e4e1e9">Glosor v.38</div></div>
+<div style="flex:none;border-radius:4px;background:#1c1d22;padding:9px 12px"><div style="font:500 11px/1 Roboto;letter-spacing:1.6px;color:#8e8e98">SO · LÄXA</div><div style="font:400 19px/1.25 Roboto;margin-top:5px;color:#e4e1e9">Läs kap 4</div></div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:7px;min-width:0">
+<div style="flex:none;height:52px;display:flex;flex-direction:column;justify-content:center;padding-left:4px;border-bottom:1px solid #33343b"><div style="font:500 16px/1 Roboto;letter-spacing:1.2px;color:#c9c6cf">FRE</div><div style="font:300 14px/1 Roboto;color:#8e8e98;margin-top:5px">18 sep</div></div>
+<div style="flex:none;border-radius:4px;background:#1c1d22;padding:9px 12px"><div style="font:500 11px/1 Roboto;letter-spacing:1.6px;color:#8e8e98">SO · 13:15</div><div style="font:400 19px/1.25 Roboto;margin-top:5px;color:#e4e1e9">Redovisning grupparbete</div></div>
+<div style="flex:none;border-radius:4px;background:#1c1d22;padding:9px 12px"><div style="font:500 11px/1 Roboto;letter-spacing:1.6px;color:#8e8e98">NO · LÄXA</div><div style="font:400 19px/1.25 Roboto;margin-top:5px;color:#e4e1e9">Repetera kap 2</div></div>
+</div>
+
+</div>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1024,&quot;height&quot;:768},&quot;showCountdown&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;States&quot;},&quot;dimmed&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Night mode&quot;},&quot;dimLevel&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:45,&quot;min&quot;:10,&quot;max&quot;:100,&quot;step&quot;:5,&quot;unit&quot;:&quot;%&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Night mode&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const dim = this.props.dimmed ?? false;
+    const lvl = this.props.dimLevel ?? 45;
+    return {
+      showCountdown: this.props.showCountdown ?? true,
+      dimFilter: dim ? `brightness(${lvl / 100})` : 'none',
+    };
+  }
+}
+</script>
+</body>
+</html>
