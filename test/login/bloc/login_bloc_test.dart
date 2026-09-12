@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:auth_repository/auth_repository.dart';
 import 'package:bloc_test/bloc_test.dart';
-import 'package:flutter_starter/login/bloc/login_bloc.dart';
+import 'package:school_app/login/bloc/login_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

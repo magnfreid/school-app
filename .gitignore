@@ -112,3 +112,15 @@ coverage/
 
 # FVM — ignore the SDK symlink/cache, but keep .fvmrc
 .fvm/
+
+# Secrets / local config — Google service account keys, API tokens, etc.
+# for the Calendar sync. Never commit these.
+.env
+.env.*
+*.env
+secrets/
+*-service-account.json
+service-account*.json
+credentials.json
+*.pem
+*.p12

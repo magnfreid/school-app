@@ -245,7 +245,7 @@ rather than the bare commands.
 
 - [ ] `./scripts/setup.sh`
 - [ ] Commit the generated `.fvmrc`
-- [ ] Rename the package (`flutter_starter` → your name) in root `pubspec.yaml`
+- [x] Rename the package (`flutter_starter` → your name) in root `pubspec.yaml`
       and all `package:flutter_starter/...` imports
 - [ ] Update `AppColors.seed` in `packages/app_ui/lib/colors/app_colors.dart`
 - [ ] Replace the placeholder home feature in `lib/home/`

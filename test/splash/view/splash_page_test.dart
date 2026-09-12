@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_starter/l10n/app_localizations.dart';
-import 'package:flutter_starter/splash/view/splash_page.dart';
+import 'package:school_app/l10n/app_localizations.dart';
+import 'package:school_app/splash/view/splash_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

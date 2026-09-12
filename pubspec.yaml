@@ -1,5 +1,5 @@
-name: flutter_starter
-description: Flutter starter template.
+name: school_app
+description: Wall-mounted school schedule display.
 publish_to: "none"
 version: 0.1.0+1
 
