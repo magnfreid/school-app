@@ -1,0 +1,47 @@
+name: flutter_starter
+description: Flutter starter template.
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.12.0
+  flutter: ">=3.44.0"
+
+workspace:
+  - packages/app_ui
+  - packages/bloc_utils
+  - packages/auth_repository
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  flutter_bloc: ^9.0.0
+  freezed_annotation: ^3.0.0
+  intl: any
+  go_router: ^18.0.0
+
+  app_ui:
+    path: ./packages/app_ui
+  auth_repository:
+    path: ./packages/auth_repository
+  bloc_utils:
+    path: ./packages/bloc_utils
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+  build_runner: ^2.4.0
+  freezed: ^3.0.0
+  bloc_test: ^10.0.0
+  mocktail: ^1.0.0
+
+flutter:
+  uses-material-design: true
+  generate: true

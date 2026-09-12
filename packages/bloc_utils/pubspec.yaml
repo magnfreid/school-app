@@ -1,0 +1,21 @@
+name: bloc_utils
+description: Common BLoC event transformers and utilities for the app.
+version: 0.1.0
+publish_to: "none"
+
+environment:
+  sdk: ^3.10.0
+
+resolution: workspace
+
+dependencies:
+  bloc: ^9.0.0
+  bloc_concurrency: ^0.3.0
+  rxdart: ^0.28.0
+
+dev_dependencies:
+  test: ^1.24.0
+  bloc_test: ^10.0.0
+  mocktail: ^1.0.0
+  lints: ^6.0.0
+

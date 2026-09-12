@@ -1,0 +1,47 @@
+{
+  "@@locale": "en",
+  "appTitle": "Flutter Starter",
+  "@appTitle": {
+    "description": "The title of the application."
+  },
+  "welcomeHeadline": "Welcome",
+  "@welcomeHeadline": {
+    "description": "Headline shown on the home page."
+  },
+  "loginTitle": "Sign in",
+  "@loginTitle": {
+    "description": "Title shown on the login page."
+  },
+  "loginButton": "Sign in",
+  "@loginButton": {
+    "description": "Label for the primary login button."
+  },
+  "loginEmailLabel": "Email",
+  "@loginEmailLabel": {
+    "description": "Label for the email text field on the login page."
+  },
+  "loginPasswordLabel": "Password",
+  "@loginPasswordLabel": {
+    "description": "Label for the password text field on the login page."
+  },
+  "themeSwitcherTooltip": "Switch theme",
+  "@themeSwitcherTooltip": {
+    "description": "Tooltip for the theme switcher button in the app bar."
+  },
+  "signOutTooltip": "Sign out",
+  "@signOutTooltip": {
+    "description": "Tooltip for the sign out button in the app bar."
+  },
+  "splashLabel": "Splash screen",
+  "@splashLabel": {
+    "description": "Placeholder text shown on the splash/loading screen."
+  },
+  "loginFailed": "Could not sign in. Check your details and try again.",
+  "@loginFailed": {
+    "description": "Snackbar shown when a sign-in attempt fails."
+  },
+  "loginUnexpectedError": "Something went wrong. Please try again.",
+  "@loginUnexpectedError": {
+    "description": "Snackbar shown when sign-in fails for an unexpected reason."
+  }
+}
