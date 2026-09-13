@@ -34,6 +34,7 @@ class DayColumn extends StatelessWidget {
             child: Column(
               spacing: spacing.step7,
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 for (final event in day.events) EventCard(event: event),
               ],

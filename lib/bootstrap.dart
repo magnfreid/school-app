@@ -3,6 +3,7 @@ import 'dart:developer' as developer;
 
 import 'package:calendar_config_repository/calendar_config_repository.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:school_app/app/app.dart';
@@ -38,6 +39,13 @@ class _AppBlocObserver extends BlocObserver {
 /// for a real backend is a one-line change here and touches no feature code.
 Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // This is a kiosk display, permanently on with system bars hidden — the
+  // Week View handoff deliberately draws with no SafeArea on that
+  // assumption. Real lock-task kiosk setup is device infrastructure (out of
+  // scope for this repo), but hiding the system UI here makes the screen
+  // render as designed on any device, not only a locked-down one.
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
   if (kDebugMode) {
     Bloc.observer = const _AppBlocObserver();
