@@ -11,6 +11,8 @@ workspace:
   - packages/app_ui
   - packages/bloc_utils
   - packages/auth_repository
+  - packages/schedule_repository
+  - packages/calendar_config_repository
 
 dependencies:
   flutter:
@@ -29,6 +31,10 @@ dependencies:
     path: ./packages/auth_repository
   bloc_utils:
     path: ./packages/bloc_utils
+  calendar_config_repository:
+    path: ./packages/calendar_config_repository
+  schedule_repository:
+    path: ./packages/schedule_repository
 
 dev_dependencies:
   flutter_test:
