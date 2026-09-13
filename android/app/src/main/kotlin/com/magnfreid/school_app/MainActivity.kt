@@ -1,4 +1,4 @@
-package com.magnfreid.com.flutter_starter
+package com.magnfreid.school_app
 
 import io.flutter.embedding.android.FlutterActivity
 
