@@ -6,9 +6,16 @@ plugins {
 }
 
 android {
-    namespace = "com.magnfreid.com.flutter_starter"
+    namespace = "com.magnfreid.school_app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
+
+    lint {
+        // Google Play's target-SDK floor doesn't apply: this build is
+        // sideloaded to a fixed Android 9 / API 28 tablet, never distributed
+        // through Play. See docs/roadmap.md, "Device housekeeping" chunk.
+        disable += "ExpiredTargetSdkVersion"
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -20,12 +27,11 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.magnfreid.com.flutter_starter"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        applicationId = "com.magnfreid.school_app"
+        // The wall tablet is a Galaxy Tab S3 (SM-T825), which stops at API 28.
+        // Sideloaded, so no Play Store targetSdk floor applies.
+        minSdk = 28
+        targetSdk = 28
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
