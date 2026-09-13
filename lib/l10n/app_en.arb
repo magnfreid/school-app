@@ -1,47 +1,39 @@
 {
   "@@locale": "en",
-  "appTitle": "Flutter Starter",
+  "appTitle": "School Schedule",
   "@appTitle": {
     "description": "The title of the application."
   },
-  "welcomeHeadline": "Welcome",
-  "@welcomeHeadline": {
-    "description": "Headline shown on the home page."
+  "scheduleTitle": "Schedule",
+  "@scheduleTitle": {
+    "description": "Title shown on the schedule page."
   },
-  "loginTitle": "Sign in",
-  "@loginTitle": {
-    "description": "Title shown on the login page."
+  "schedulePlaceholder": "Schedule — coming soon",
+  "@schedulePlaceholder": {
+    "description": "Placeholder body text shown on the schedule page."
   },
-  "loginButton": "Sign in",
-  "@loginButton": {
-    "description": "Label for the primary login button."
+  "setupTitle": "Setup",
+  "@setupTitle": {
+    "description": "Title shown on the setup page."
   },
-  "loginEmailLabel": "Email",
-  "@loginEmailLabel": {
-    "description": "Label for the email text field on the login page."
+  "setupPlaceholder": "Setup — coming soon",
+  "@setupPlaceholder": {
+    "description": "Placeholder body text shown on the setup page."
   },
-  "loginPasswordLabel": "Password",
-  "@loginPasswordLabel": {
-    "description": "Label for the password text field on the login page."
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "Title shown on the settings page."
+  },
+  "settingsPlaceholder": "Settings — coming soon",
+  "@settingsPlaceholder": {
+    "description": "Placeholder body text shown on the settings page."
   },
   "themeSwitcherTooltip": "Switch theme",
   "@themeSwitcherTooltip": {
     "description": "Tooltip for the theme switcher button in the app bar."
   },
-  "signOutTooltip": "Sign out",
-  "@signOutTooltip": {
-    "description": "Tooltip for the sign out button in the app bar."
-  },
   "splashLabel": "Splash screen",
   "@splashLabel": {
     "description": "Placeholder text shown on the splash/loading screen."
-  },
-  "loginFailed": "Could not sign in. Check your details and try again.",
-  "@loginFailed": {
-    "description": "Snackbar shown when a sign-in attempt fails."
-  },
-  "loginUnexpectedError": "Something went wrong. Please try again.",
-  "@loginUnexpectedError": {
-    "description": "Snackbar shown when sign-in fails for an unexpected reason."
   }
 }

@@ -1,9 +1,9 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:school_app/app/cubit/calendar_config_cubit.dart';
 import 'package:school_app/app/cubit/theme_cubit.dart';
 import 'package:school_app/app/router/app_router.dart';
-import 'package:school_app/auth/cubit/auth_cubit.dart';
 import 'package:school_app/l10n/app_localizations.dart';
 import 'package:school_app/l10n/extensions/app_localizations_extension.dart';
 import 'package:go_router/go_router.dart';
@@ -14,10 +14,10 @@ import 'package:go_router/go_router.dart';
 /// - [ThemeCubit] state to `MaterialApp.themeMode`.
 /// - Light/dark [ThemeData] from `app_ui`.
 /// - Localization delegates and supported locales.
-/// - `go_router` via [MaterialApp.router] with auth-aware redirects.
+/// - `go_router` via [MaterialApp.router] with a config-aware gate.
 ///
-/// Expects [AuthCubit] and [ThemeCubit] to be provided above it — see
-/// `bootstrap.dart`.
+/// Expects [CalendarConfigCubit] and [ThemeCubit] to be provided above it —
+/// see `bootstrap.dart`.
 class App extends StatefulWidget {
   /// Creates the app root.
   const App({super.key});
@@ -34,7 +34,7 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-    _router = AppRouter.build(authCubit: context.read<AuthCubit>());
+    _router = AppRouter.build(configCubit: context.read<CalendarConfigCubit>());
   }
 
   @override

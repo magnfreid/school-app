@@ -101,38 +101,44 @@ abstract class AppLocalizations {
   /// The title of the application.
   ///
   /// In en, this message translates to:
-  /// **'Flutter Starter'**
+  /// **'School Schedule'**
   String get appTitle;
 
-  /// Headline shown on the home page.
+  /// Title shown on the schedule page.
   ///
   /// In en, this message translates to:
-  /// **'Welcome'**
-  String get welcomeHeadline;
+  /// **'Schedule'**
+  String get scheduleTitle;
 
-  /// Title shown on the login page.
+  /// Placeholder body text shown on the schedule page.
   ///
   /// In en, this message translates to:
-  /// **'Sign in'**
-  String get loginTitle;
+  /// **'Schedule — coming soon'**
+  String get schedulePlaceholder;
 
-  /// Label for the primary login button.
+  /// Title shown on the setup page.
   ///
   /// In en, this message translates to:
-  /// **'Sign in'**
-  String get loginButton;
+  /// **'Setup'**
+  String get setupTitle;
 
-  /// Label for the email text field on the login page.
+  /// Placeholder body text shown on the setup page.
   ///
   /// In en, this message translates to:
-  /// **'Email'**
-  String get loginEmailLabel;
+  /// **'Setup — coming soon'**
+  String get setupPlaceholder;
 
-  /// Label for the password text field on the login page.
+  /// Title shown on the settings page.
   ///
   /// In en, this message translates to:
-  /// **'Password'**
-  String get loginPasswordLabel;
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// Placeholder body text shown on the settings page.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings — coming soon'**
+  String get settingsPlaceholder;
 
   /// Tooltip for the theme switcher button in the app bar.
   ///
@@ -140,29 +146,11 @@ abstract class AppLocalizations {
   /// **'Switch theme'**
   String get themeSwitcherTooltip;
 
-  /// Tooltip for the sign out button in the app bar.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign out'**
-  String get signOutTooltip;
-
   /// Placeholder text shown on the splash/loading screen.
   ///
   /// In en, this message translates to:
   /// **'Splash screen'**
   String get splashLabel;
-
-  /// Snackbar shown when a sign-in attempt fails.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not sign in. Check your details and try again.'**
-  String get loginFailed;
-
-  /// Snackbar shown when sign-in fails for an unexpected reason.
-  ///
-  /// In en, this message translates to:
-  /// **'Something went wrong. Please try again.'**
-  String get loginUnexpectedError;
 }
 
 class _AppLocalizationsDelegate

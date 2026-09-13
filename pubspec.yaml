@@ -10,7 +10,6 @@ environment:
 workspace:
   - packages/app_ui
   - packages/bloc_utils
-  - packages/auth_repository
   - packages/schedule_repository
   - packages/calendar_config_repository
 
@@ -27,8 +26,6 @@ dependencies:
 
   app_ui:
     path: ./packages/app_ui
-  auth_repository:
-    path: ./packages/auth_repository
   bloc_utils:
     path: ./packages/bloc_utils
   calendar_config_repository:

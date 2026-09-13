@@ -13,12 +13,11 @@ lib/
   app/
     app.dart            # MaterialApp, theme + l10n wiring
     cubit/
+      calendar_config_cubit.dart  # CalendarConfig gate state, mirrors the repo
       theme_cubit.dart  # ThemeMode, cycled from the app bar
     router/
-      app_router.dart   # GoRouter construction, auth redirect
+      app_router.dart   # GoRouter construction, config-gate redirect
       routes.dart       # Route definitions, path/name constants
-  auth/
-    cubit/              # AuthCubit — mirrors AuthRepository into AuthState
   l10n/
     app_en.arb          # English (source of truth)
     app_sv.arb          # Swedish
@@ -30,17 +29,20 @@ lib/
 
 packages/
   app_ui/               # Pre-built design system. See below.
-  auth_repository/      # AuthRepository interface + InMemory and Fake impls
   bloc_utils/           # Event transformers; re-exports bloc_concurrency
+  calendar_config_repository/  # CalendarConfigRepository + InMemory and Fake impls
+  schedule_repository/  # ScheduleRepository + Fake impl and week math
 
 test/
   helpers/app_harness.dart   # The provider stack bootstrap installs
   integration/
 ```
 
-Copy the shape of an existing feature (`lib/login/` is the fullest worked
-example) for a new one. See **Architecture conventions** below for the
-Page/View split and when to extract a widget.
+Copy the shape of an existing feature for a new one. `lib/schedule/`,
+`lib/setup/` and `lib/settings/` are placeholder pages only — until a real
+feature lands there is no fullest worked example, and the first one sets the
+shape. See **Architecture conventions** below for the Page/View split and
+when to extract a widget.
 
 ## Architecture conventions
 
@@ -53,19 +55,20 @@ Cubit whose state is already a plain existing enum with no fields to wrap
 artificial Freezed wrapper.
 
 **Cubit** when state just mirrors something upstream and there's no user
-intent worth naming as an event — `AuthCubit` mirrors
-`AuthRepository.authStateChanges`, `ThemeCubit` just cycles a mode. **BLoC**
-everywhere else, in particular anything with a submit/retry/toggle a user
-triggers — see `LoginBloc`.
+intent worth naming as an event — `CalendarConfigCubit` mirrors
+`CalendarConfigRepository.configChanges`, `ThemeCubit` just cycles a mode.
+**BLoC** everywhere else, in particular anything with a submit/retry/toggle a
+user triggers. No feature ships a BLoC yet — the first one that needs it sets
+the worked example.
 
 State shape is a sealed union (`@freezed sealed class`) for screens whose
-states are mutually exclusive with different data — forms, auth, onboarding;
-see `LoginState` / `AuthState`.
+states are mutually exclusive with different data — forms, gates, onboarding;
+see `CalendarConfigState`.
 
 Events are always sealed unions, one file per bloc's event set
-(`login_event.dart`). Apply an event transformer only when an event has a real
-concurrency requirement — `LoginBloc` applies `droppable()` to its submit
-event so a double-tap can't fire two sign-ins. Don't add one by default;
+(`<feature>_event.dart`). Apply an event transformer only when an event has a
+real concurrency requirement — `droppable()` on a submit event so a
+double-tap can't fire two requests, for instance. Don't add one by default;
 un-transformed (concurrent) is correct for independent events like navigation
 or toggles.
 
@@ -77,24 +80,27 @@ Run `fvm dart run build_runner build --delete-conflicting-outputs` (or
 Every external dependency — auth, a future API, storage — is an
 `abstract interface class` in its own `packages/<name>_repository` package.
 Feature code and BLoCs depend on the interface, never on an implementation:
-`context.read<AuthRepository>()` resolves to the contract even though
-`bootstrap.dart` is what actually provided `InMemoryAuthRepository`.
+`context.read<CalendarConfigRepository>()` resolves to the contract even
+though `bootstrap.dart` is what actually provided
+`InMemoryCalendarConfigRepository`.
 
 Each interface package ships three things:
 
 - **The interface**, plus any domain exception type it throws
-  (`AuthException`). Implementations translate vendor errors into this before
-  they cross the package boundary — a vendor type must never reach `lib/`.
+  (`CalendarConfigException`). Implementations translate vendor errors into
+  this before they cross the package boundary — a vendor type must never
+  reach `lib/`.
 - **A real (or in-memory placeholder) implementation**, wired in exactly one
   place: `bootstrap.dart`. Swapping backends is a one-line change there and
   touches no feature code.
 - **A `Fake*` implementation**, scriptable up front
-  (`FakeAuthRepository(loginError: ..., loginDelay: ...)`), for tests. Write a
-  mocktail `Mock` only for a dependency that doesn't have a fake yet — a
-  repository that already ships one doesn't need a second test double.
+  (`FakeCalendarConfigRepository(initialConfig: ..., saveError: ...)`), for
+  tests. Write a mocktail `Mock` only for a dependency that doesn't have a
+  fake yet — a repository that already ships one doesn't need a second test
+  double.
 
-`auth_repository` is the worked example — read it before adding the next
-repository package.
+`calendar_config_repository` is the worked example — read it before adding
+the next repository package.
 
 ### Router
 
@@ -109,11 +115,11 @@ Never call `Navigator.push` / `Navigator.pop` from feature code. Navigate with
 replaces the stack at that level, `push` stacks on top; most transitions
 should be `go`.
 
-The auth redirect is a **guard, not a router**: it names the locations each
-auth state may *not* be at and returns `null` (pass through) for everything
-else — see the comment on `AppRouter._redirect`. A redirect that instead pins
-each state to exactly one location makes every route added later unreachable,
-and nothing fails until the app has a fourth screen.
+The config-gate redirect is a **guard, not a router**: it names the locations
+each gate state may *not* be at and returns `null` (pass through) for
+everything else — see the comment on `AppRouter._redirect`. A redirect that
+instead pins each state to exactly one location makes every route added later
+unreachable, and nothing fails until the app has a fourth screen.
 
 `_GoRouterRefreshStream` (in `app_router.dart`) is hand-rolled, not imported —
 `go_router` shipped a `GoRouterRefreshStream` and then removed it. Its
@@ -160,8 +166,9 @@ transitions *and* error paths), a new repository/service public contract
 (including its failure mapping), pure domain logic, and any `_guard`-style
 method whose catch-clause order matters — a handler that rethrows a typed
 exception before a catch-all is order-dependent, and getting the order wrong
-fails silently (see `LoginBloc`'s catch-all after `AuthException`, and its
-test asserting the *specific* failure rather than a loose `isA<...>()`).
+fails silently. Assert the *specific* failure, not a loose `isA<...>()`. The
+same reasoning covers precedence generally — `AppRouter._redirect`'s ordering
+is the live example, pinned by `test/app/router/app_router_test.dart`.
 
 **Default:** one widget test per new page, pumped through the real
 `<Feature>Page` (not the `View`) so its own `BlocProvider`/`RepositoryProvider`
@@ -174,8 +181,8 @@ renders; that's why `<Feature>View` is public rather than private-prefixed.
 `app_localizations*.dart`).
 
 ```
-test/                          # mirrors lib/ — e.g. lib/login/bloc/login_bloc.dart
-  login/bloc/login_bloc_test.dart   # is covered at test/login/bloc/login_bloc_test.dart
+test/                          # mirrors lib/ — e.g. lib/app/cubit/calendar_config_cubit.dart
+  app/cubit/calendar_config_cubit_test.dart  # is covered at test/app/cubit/calendar_config_cubit_test.dart
   helpers/app_harness.dart     # wrapWithAppProviders — pump through this, not a
                                 # hand-built provider subset, so tests exercise
                                 # the same wiring bootstrap.dart runs with
@@ -207,12 +214,13 @@ packages/app_ui/lib/
 `ThemeSwitcherWidget` is driven by `ThemeCubit` in `lib/app/cubit/` and wired
 to `MaterialApp.themeMode` in `app.dart`.
 
-### `auth_repository`
+### `calendar_config_repository`
 
-`AuthRepository` (interface) + `InMemoryAuthRepository` (what `bootstrap.dart`
-wires so a fresh clone runs without a backend) + `FakeAuthRepository`
-(scriptable double tests use). See **Repositories: interfaces and fakes**
-above for the pattern this package exists to demonstrate.
+`CalendarConfigRepository` (interface) + `InMemoryCalendarConfigRepository`
+(what `bootstrap.dart` wires so a fresh clone boots straight to the schedule
+without a backend) + `FakeCalendarConfigRepository` (scriptable double tests
+use). See **Repositories: interfaces and fakes** above for the pattern this
+package exists to demonstrate.
 
 ## Workspace
 
@@ -223,10 +231,11 @@ support globs) **and** lists each as a dependency. Each member pubspec sets
 ## Lint
 
 Line length 80 — `dart format`'s default; the repo configures no `page_width`.
-Root and `app_ui` include `package:flutter_lints/flutter.yaml`; the two
-Dart-only packages (`bloc_utils`, `auth_repository`) include
-`package:lints/recommended.yaml`. Each package under `packages/` additionally
-enables `public_member_api_docs`; root `lib/` does not.
+Root and `app_ui` include `package:flutter_lints/flutter.yaml`; the three
+Dart-only packages (`bloc_utils`, `calendar_config_repository`,
+`schedule_repository`) include `package:lints/recommended.yaml`. Each package
+under `packages/` additionally enables `public_member_api_docs`; root `lib/`
+does not.
 
 ## Scripts
 
@@ -248,8 +257,10 @@ rather than the bare commands.
 - [x] Rename the package (`flutter_starter` → your name) in root `pubspec.yaml`
       and all `package:flutter_starter/...` imports
 - [ ] Update `AppColors.seed` in `packages/app_ui/lib/colors/app_colors.dart`
-- [ ] Replace the placeholder home feature in `lib/home/`
-- [ ] Point `bootstrap.dart` at a real `AuthRepository` implementation
+- [ ] Replace the placeholder pages in `lib/schedule/`, `lib/setup/` and
+      `lib/settings/`
+- [ ] Point `bootstrap.dart` at a real `CalendarConfigRepository`
+      implementation
 - [ ] Add `ANTHROPIC_API_KEY` as a repo secret if you want the `@claude`
       GitHub workflow
 - [ ] (Optional) `./scripts/upgrade.sh` if the template has been sitting a while
