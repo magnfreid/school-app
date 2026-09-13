@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:school_app/app/cubit/calendar_config_cubit.dart';
 import 'package:school_app/app/cubit/theme_cubit.dart';
+import 'package:schedule_repository/schedule_repository.dart';
 
 /// Wraps [child] in the provider stack `bootstrap.dart` installs.
 ///
@@ -10,11 +11,17 @@ import 'package:school_app/app/cubit/theme_cubit.dart';
 /// runs with, instead of a hand-built subset that drifts from it.
 Widget wrapWithAppProviders({
   required CalendarConfigRepository configRepository,
+  required ScheduleRepository scheduleRepository,
   required CalendarConfigCubit configCubit,
   required Widget child,
 }) {
-  return RepositoryProvider<CalendarConfigRepository>.value(
-    value: configRepository,
+  return MultiRepositoryProvider(
+    providers: [
+      RepositoryProvider<CalendarConfigRepository>.value(
+        value: configRepository,
+      ),
+      RepositoryProvider<ScheduleRepository>.value(value: scheduleRepository),
+    ],
     child: MultiBlocProvider(
       providers: [
         BlocProvider.value(value: configCubit),

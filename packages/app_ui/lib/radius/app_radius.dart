@@ -10,6 +10,8 @@ class AppRadius {
     this.medium = 16,
     this.large = 24,
     this.xlarge = 32,
+    this.step3 = 3,
+    this.step12 = 12,
   });
 
   /// 4dp — one quarter of the base.
@@ -26,4 +28,10 @@ class AppRadius {
 
   /// 32dp — double the base.
   final double xlarge;
+
+  /// 3dp — Week View: special-event banners.
+  final double step3;
+
+  /// 12dp — Week View: countdown pill.
+  final double step12;
 }

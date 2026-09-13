@@ -104,17 +104,148 @@ abstract class AppLocalizations {
   /// **'School Schedule'**
   String get appTitle;
 
-  /// Title shown on the schedule page.
+  /// Week number label in the schedule app bar.
   ///
   /// In en, this message translates to:
-  /// **'Schedule'**
-  String get scheduleTitle;
+  /// **'Week {week}'**
+  String scheduleWeekLabel(int week);
 
-  /// Placeholder body text shown on the schedule page.
+  /// Date range for a displayed week that stays within one month.
   ///
   /// In en, this message translates to:
-  /// **'Schedule — coming soon'**
-  String get schedulePlaceholder;
+  /// **'{start}–{end} {month}'**
+  String scheduleWeekRange(String start, String end, String month);
+
+  /// Date range for a displayed week that spans two months.
+  ///
+  /// In en, this message translates to:
+  /// **'{startDay} {startMonth}–{endDay} {endMonth}'**
+  String scheduleWeekRangeCrossMonth(
+    String startDay,
+    String startMonth,
+    String endDay,
+    String endMonth,
+  );
+
+  /// Eyebrow above the next-event hero title, naming the event's kind.
+  ///
+  /// In en, this message translates to:
+  /// **'NEXT · {kind}'**
+  String scheduleNextEventEyebrow(String kind);
+
+  /// Eyebrow above the next-event hero title when the event has no kind word.
+  ///
+  /// In en, this message translates to:
+  /// **'NEXT'**
+  String get scheduleNextEventEyebrowPlain;
+
+  /// Countdown pill text in the next-event hero, shown when the event is more than one day away.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{1 day left} other{{days} days left}}'**
+  String scheduleDaysUntil(int days);
+
+  /// Relative day word used in the hero when the next event is today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get scheduleRelativeToday;
+
+  /// Relative day word used in the hero when the next event is tomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow'**
+  String get scheduleRelativeTomorrow;
+
+  /// Sync-status text showing the time of the last successful sync.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated {time}'**
+  String scheduleLastSynced(String time);
+
+  /// Sync-status text shown while the schedule is loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Updating…'**
+  String get scheduleSyncing;
+
+  /// Sync-status text shown when the schedule failed to load.
+  ///
+  /// In en, this message translates to:
+  /// **'Update failed'**
+  String get scheduleSyncFailed;
+
+  /// Eyebrow label on a week-spanning special-event banner.
+  ///
+  /// In en, this message translates to:
+  /// **'ALL WEEK'**
+  String get scheduleSpecialWeekLabel;
+
+  /// Eyebrow label on a single-day special-event banner.
+  ///
+  /// In en, this message translates to:
+  /// **'ALL DAY'**
+  String get scheduleSpecialDayLabel;
+
+  /// Severity word shown on a graded-test event.
+  ///
+  /// In en, this message translates to:
+  /// **'TEST'**
+  String get scheduleSeverityProv;
+
+  /// Severity word shown on a homework event.
+  ///
+  /// In en, this message translates to:
+  /// **'HOMEWORK'**
+  String get scheduleSeverityLaxa;
+
+  /// Severity word shown on a hand-in / submission event.
+  ///
+  /// In en, this message translates to:
+  /// **'HAND-IN'**
+  String get scheduleSeverityInlamning;
+
+  /// Next-event hero empty state, shown when there is no upcoming event this week.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing coming up this week'**
+  String get scheduleNoUpcoming;
+
+  /// Next-event hero title while the schedule is loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading…'**
+  String get scheduleLoading;
+
+  /// Next-event hero title when the schedule failed to load.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule unavailable'**
+  String get scheduleUnavailable;
+
+  /// Tooltip for the previous-week navigation arrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous week'**
+  String get scheduleNavPreviousWeekTooltip;
+
+  /// Tooltip for the next-week navigation arrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Next week'**
+  String get scheduleNavNextWeekTooltip;
+
+  /// Tooltip for the settings icon button.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get scheduleSettingsTooltip;
+
+  /// Tooltip for the placeholder alternate-view icon button.
+  ///
+  /// In en, this message translates to:
+  /// **'Alternate view'**
+  String get scheduleAlternateViewTooltip;
 
   /// Title shown on the setup page.
   ///
