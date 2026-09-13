@@ -4,13 +4,142 @@
   "@appTitle": {
     "description": "The title of the application."
   },
-  "scheduleTitle": "Schedule",
-  "@scheduleTitle": {
-    "description": "Title shown on the schedule page."
+  "scheduleWeekLabel": "Week {week}",
+  "@scheduleWeekLabel": {
+    "description": "Week number label in the schedule app bar.",
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
   },
-  "schedulePlaceholder": "Schedule — coming soon",
-  "@schedulePlaceholder": {
-    "description": "Placeholder body text shown on the schedule page."
+  "scheduleWeekRange": "{start}–{end} {month}",
+  "@scheduleWeekRange": {
+    "description": "Date range for a displayed week that stays within one month.",
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "scheduleWeekRangeCrossMonth": "{startDay} {startMonth}–{endDay} {endMonth}",
+  "@scheduleWeekRangeCrossMonth": {
+    "description": "Date range for a displayed week that spans two months.",
+    "placeholders": {
+      "startDay": {
+        "type": "String"
+      },
+      "startMonth": {
+        "type": "String"
+      },
+      "endDay": {
+        "type": "String"
+      },
+      "endMonth": {
+        "type": "String"
+      }
+    }
+  },
+  "scheduleNextEventEyebrow": "NEXT · {kind}",
+  "@scheduleNextEventEyebrow": {
+    "description": "Eyebrow above the next-event hero title, naming the event's kind.",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "scheduleNextEventEyebrowPlain": "NEXT",
+  "@scheduleNextEventEyebrowPlain": {
+    "description": "Eyebrow above the next-event hero title when the event has no kind word."
+  },
+  "scheduleDaysUntil": "{days, plural, =1{1 day left} other{{days} days left}}",
+  "@scheduleDaysUntil": {
+    "description": "Countdown pill text in the next-event hero, shown when the event is more than one day away.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "scheduleRelativeToday": "Today",
+  "@scheduleRelativeToday": {
+    "description": "Relative day word used in the hero when the next event is today."
+  },
+  "scheduleRelativeTomorrow": "Tomorrow",
+  "@scheduleRelativeTomorrow": {
+    "description": "Relative day word used in the hero when the next event is tomorrow."
+  },
+  "scheduleLastSynced": "Updated {time}",
+  "@scheduleLastSynced": {
+    "description": "Sync-status text showing the time of the last successful sync.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "scheduleSyncing": "Updating…",
+  "@scheduleSyncing": {
+    "description": "Sync-status text shown while the schedule is loading."
+  },
+  "scheduleSyncFailed": "Update failed",
+  "@scheduleSyncFailed": {
+    "description": "Sync-status text shown when the schedule failed to load."
+  },
+  "scheduleSpecialWeekLabel": "ALL WEEK",
+  "@scheduleSpecialWeekLabel": {
+    "description": "Eyebrow label on a week-spanning special-event banner."
+  },
+  "scheduleSpecialDayLabel": "ALL DAY",
+  "@scheduleSpecialDayLabel": {
+    "description": "Eyebrow label on a single-day special-event banner."
+  },
+  "scheduleSeverityProv": "TEST",
+  "@scheduleSeverityProv": {
+    "description": "Severity word shown on a graded-test event."
+  },
+  "scheduleSeverityLaxa": "HOMEWORK",
+  "@scheduleSeverityLaxa": {
+    "description": "Severity word shown on a homework event."
+  },
+  "scheduleSeverityInlamning": "HAND-IN",
+  "@scheduleSeverityInlamning": {
+    "description": "Severity word shown on a hand-in / submission event."
+  },
+  "scheduleNoUpcoming": "Nothing coming up this week",
+  "@scheduleNoUpcoming": {
+    "description": "Next-event hero empty state, shown when there is no upcoming event this week."
+  },
+  "scheduleLoading": "Loading…",
+  "@scheduleLoading": {
+    "description": "Next-event hero title while the schedule is loading."
+  },
+  "scheduleUnavailable": "Schedule unavailable",
+  "@scheduleUnavailable": {
+    "description": "Next-event hero title when the schedule failed to load."
+  },
+  "scheduleNavPreviousWeekTooltip": "Previous week",
+  "@scheduleNavPreviousWeekTooltip": {
+    "description": "Tooltip for the previous-week navigation arrow."
+  },
+  "scheduleNavNextWeekTooltip": "Next week",
+  "@scheduleNavNextWeekTooltip": {
+    "description": "Tooltip for the next-week navigation arrow."
+  },
+  "scheduleSettingsTooltip": "Settings",
+  "@scheduleSettingsTooltip": {
+    "description": "Tooltip for the settings icon button."
+  },
+  "scheduleAlternateViewTooltip": "Alternate view",
+  "@scheduleAlternateViewTooltip": {
+    "description": "Tooltip for the placeholder alternate-view icon button."
   },
   "setupTitle": "Setup",
   "@setupTitle": {

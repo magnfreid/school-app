@@ -6,4 +6,4 @@ row was last updated — fill it in once the handoff is committed.
 
 | Screen | Status | Handoff tree | Plan | Shipped |
 |---|---|---|---|---|
-| week-view | pending | 71f32ca | — | — |
+| week-view | implemented | 71f32ca | `.claude/workflow/week-view-fake-data/plan.md` | — |

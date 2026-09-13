@@ -11,13 +11,15 @@ import 'package:go_router/go_router.dart';
 /// Root of the widget tree.
 ///
 /// Wires:
-/// - [ThemeCubit] state to `MaterialApp.themeMode`.
 /// - Light/dark [ThemeData] from `app_ui`.
 /// - Localization delegates and supported locales.
 /// - `go_router` via [MaterialApp.router] with a config-aware gate.
 ///
 /// Expects [CalendarConfigCubit] and [ThemeCubit] to be provided above it —
-/// see `bootstrap.dart`.
+/// see `bootstrap.dart`. [ThemeCubit] stays provided for other screens even
+/// though this widget no longer reads it: `themeMode` is pinned to
+/// [ThemeMode.dark] for the Week View kiosk (V1 is dark-only). Restore the
+/// `BlocBuilder<ThemeCubit, ThemeMode>` here once a light-mode screen exists.
 class App extends StatefulWidget {
   /// Creates the app root.
   const App({super.key});
@@ -45,17 +47,17 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ThemeCubit, ThemeMode>(
-      builder: (context, themeMode) => MaterialApp.router(
-        onGenerateTitle: (context) => context.l10n.appTitle,
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: themeMode,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        routerConfig: _router,
-        debugShowCheckedModeBanner: false,
-      ),
+    return MaterialApp.router(
+      onGenerateTitle: (context) => context.l10n.appTitle,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      // V1 is a dark-only kiosk (docs/roadmap.md § Week View). See the class
+      // doc for the exit condition.
+      themeMode: ThemeMode.dark,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      routerConfig: _router,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

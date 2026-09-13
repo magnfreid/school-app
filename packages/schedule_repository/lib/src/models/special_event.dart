@@ -12,6 +12,15 @@ enum SpecialEventColorPreset {
 
   /// The amber preset, used for the sample single-day banner.
   amber,
+
+  /// The purple preset.
+  purple,
+
+  /// The green preset.
+  green,
+
+  /// The pink preset.
+  pink,
 }
 
 /// A banner shown above the week grid, outside the day-column event

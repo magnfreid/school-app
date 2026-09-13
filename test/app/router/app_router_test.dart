@@ -1,3 +1,4 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:calendar_config_repository/calendar_config_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:school_app/app/cubit/calendar_config_cubit.dart';
@@ -6,6 +7,7 @@ import 'package:school_app/app/router/routes.dart';
 import 'package:school_app/l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:schedule_repository/schedule_repository.dart';
 
 import '../../helpers/app_harness.dart';
 
@@ -23,6 +25,13 @@ Future<GoRouter> _pumpRouter(
   CalendarConfigRepository repository, {
   List<RouteBase>? routeOverride,
 }) async {
+  // SchedulePage is a fixed-viewport kiosk screen (handoff § Overview), not
+  // a responsive one — pump at its design size rather than the default test
+  // surface, since a couple of these tests land on it.
+  tester.view.physicalSize = const Size(1024, 768);
+  tester.view.devicePixelRatio = 1;
+  addTearDown(tester.view.reset);
+
   final configCubit = CalendarConfigCubit(configRepository: repository);
   addTearDown(configCubit.close);
 
@@ -35,8 +44,10 @@ Future<GoRouter> _pumpRouter(
   await tester.pumpWidget(
     wrapWithAppProviders(
       configRepository: repository,
+      scheduleRepository: FakeScheduleRepository(),
       configCubit: configCubit,
       child: MaterialApp.router(
+        theme: AppTheme.darkTheme,
         routerConfig: router,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,

@@ -1,4 +1,5 @@
 import 'package:app_ui/colors/app_colors.dart';
+import 'package:app_ui/colors/schedule_colors.dart';
 import 'package:app_ui/typography/app_typography.dart';
 import 'package:flutter/material.dart';
 
@@ -29,6 +30,7 @@ abstract final class AppTheme {
         elevation: 0,
         centerTitle: false,
       ),
+      extensions: const [ScheduleColors.dark],
     );
   }
 }

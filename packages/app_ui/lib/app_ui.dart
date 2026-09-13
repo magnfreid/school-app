@@ -7,8 +7,11 @@
 library;
 
 export 'colors/app_colors.dart';
+export 'colors/schedule_colors.dart';
 export 'extensions/colors_extension.dart';
 export 'extensions/radius_extension.dart';
+export 'extensions/schedule_colors_extension.dart';
+export 'extensions/schedule_typography_extension.dart';
 export 'extensions/sizes_extension.dart';
 export 'extensions/spacing_extension.dart';
 export 'extensions/text_extension.dart';
@@ -18,4 +21,5 @@ export 'sizes/app_sizes.dart';
 export 'spacing/app_spacing.dart';
 export 'themes/app_theme.dart';
 export 'typography/app_typography.dart';
+export 'typography/schedule_typography.dart';
 export 'widgets/theme_switcher_widget.dart';
