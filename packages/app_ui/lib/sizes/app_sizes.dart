@@ -13,7 +13,7 @@ class AppSizes {
     this.dayHeaderHeight = 52,
     this.cardAccentWidth = 4,
     this.iconButtonSize = 44,
-    this.iconGlyphSize = 21,
+    this.iconGlyphSize = 26,
     this.navArrowWidth = 48,
     this.navArrowHeight = 44,
     this.syncDotSize = 7,

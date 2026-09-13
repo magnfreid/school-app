@@ -26,6 +26,7 @@ class WeekNavArrows extends StatelessWidget {
     final l10n = context.l10n;
     return Row(
       spacing: context.spacing.step6,
+      mainAxisSize: MainAxisSize.min,
       children: [
         _NavArrow(
           icon: Icons.arrow_back,
