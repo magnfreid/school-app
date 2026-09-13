@@ -1,14 +1,12 @@
 {
   "@@locale": "sv",
-  "appTitle": "Flutter Starter",
-  "welcomeHeadline": "Välkommen",
-  "loginTitle": "Logga in",
-  "loginButton": "Logga in",
-  "loginEmailLabel": "E-post",
-  "loginPasswordLabel": "Lösenord",
+  "appTitle": "Skolschema",
+  "scheduleTitle": "Schema",
+  "schedulePlaceholder": "Schema — kommer snart",
+  "setupTitle": "Konfiguration",
+  "setupPlaceholder": "Konfiguration — kommer snart",
+  "settingsTitle": "Inställningar",
+  "settingsPlaceholder": "Inställningar — kommer snart",
   "themeSwitcherTooltip": "Byt tema",
-  "signOutTooltip": "Logga ut",
-  "splashLabel": "Startskärm",
-  "loginFailed": "Kunde inte logga in. Kontrollera dina uppgifter och försök igen.",
-  "loginUnexpectedError": "Något gick fel. Försök igen."
+  "splashLabel": "Startskärm"
 }

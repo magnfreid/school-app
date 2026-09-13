@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
-import 'package:auth_repository/auth_repository.dart';
+import 'package:calendar_config_repository/calendar_config_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:school_app/app/app.dart';
+import 'package:school_app/app/cubit/calendar_config_cubit.dart';
 import 'package:school_app/app/cubit/theme_cubit.dart';
-import 'package:school_app/auth/cubit/auth_cubit.dart';
 
 /// Global [BlocObserver] used in debug mode only.
 class _AppBlocObserver extends BlocObserver {
@@ -33,8 +33,8 @@ class _AppBlocObserver extends BlocObserver {
 /// Boots the app.
 ///
 /// The only place a concrete implementation is named. Everything below this
-/// point receives interfaces — swapping [InMemoryAuthRepository] for a real
-/// backend is a one-line change here and touches no feature code.
+/// point receives interfaces — swapping [InMemoryCalendarConfigRepository]
+/// for a real backend is a one-line change here and touches no feature code.
 Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -53,17 +53,18 @@ Future<void> bootstrap() async {
   };
 
   runApp(
-    // Typed to the interface so `context.read<AuthRepository>()` in feature
-    // code resolves to the contract, never to the implementation.
-    RepositoryProvider<AuthRepository>(
-      create: (_) => InMemoryAuthRepository(),
+    // Typed to the interface so `context.read<CalendarConfigRepository>()` in
+    // feature code resolves to the contract, never to the implementation.
+    RepositoryProvider<CalendarConfigRepository>(
+      create: (_) => InMemoryCalendarConfigRepository(),
       dispose: (repository) => unawaited(repository.dispose()),
       lazy: false,
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) =>
-                AuthCubit(authRepository: context.read<AuthRepository>()),
+            create: (context) => CalendarConfigCubit(
+              configRepository: context.read<CalendarConfigRepository>(),
+            ),
             lazy: false,
           ),
           BlocProvider(create: (_) => ThemeCubit()),

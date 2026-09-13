@@ -9,36 +9,29 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Flutter Starter';
+  String get appTitle => 'School Schedule';
 
   @override
-  String get welcomeHeadline => 'Welcome';
+  String get scheduleTitle => 'Schedule';
 
   @override
-  String get loginTitle => 'Sign in';
+  String get schedulePlaceholder => 'Schedule — coming soon';
 
   @override
-  String get loginButton => 'Sign in';
+  String get setupTitle => 'Setup';
 
   @override
-  String get loginEmailLabel => 'Email';
+  String get setupPlaceholder => 'Setup — coming soon';
 
   @override
-  String get loginPasswordLabel => 'Password';
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsPlaceholder => 'Settings — coming soon';
 
   @override
   String get themeSwitcherTooltip => 'Switch theme';
 
   @override
-  String get signOutTooltip => 'Sign out';
-
-  @override
   String get splashLabel => 'Splash screen';
-
-  @override
-  String get loginFailed =>
-      'Could not sign in. Check your details and try again.';
-
-  @override
-  String get loginUnexpectedError => 'Something went wrong. Please try again.';
 }

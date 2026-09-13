@@ -2,10 +2,10 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:school_app/l10n/extensions/app_localizations_extension.dart';
 
-/// Loading screen shown while auth state is being determined.
+/// Loading screen shown while calendar-config state is being determined.
 ///
-/// The router holds the app here until auth state leaves
-/// `AuthState.unknown` — see `AppRouter._redirect`.
+/// The router holds the app here until calendar-config state leaves
+/// `CalendarConfigState.unknown` — see `AppRouter._redirect`.
 class SplashPage extends StatelessWidget {
   /// Creates the [SplashPage].
   const SplashPage({super.key});

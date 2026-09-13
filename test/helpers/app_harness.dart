@@ -1,23 +1,23 @@
-import 'package:auth_repository/auth_repository.dart';
+import 'package:calendar_config_repository/calendar_config_repository.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:school_app/app/cubit/calendar_config_cubit.dart';
 import 'package:school_app/app/cubit/theme_cubit.dart';
-import 'package:school_app/auth/cubit/auth_cubit.dart';
 
 /// Wraps [child] in the provider stack `bootstrap.dart` installs.
 ///
 /// Widget tests pump through this so they exercise the same wiring the app
 /// runs with, instead of a hand-built subset that drifts from it.
 Widget wrapWithAppProviders({
-  required AuthRepository authRepository,
-  required AuthCubit authCubit,
+  required CalendarConfigRepository configRepository,
+  required CalendarConfigCubit configCubit,
   required Widget child,
 }) {
-  return RepositoryProvider<AuthRepository>.value(
-    value: authRepository,
+  return RepositoryProvider<CalendarConfigRepository>.value(
+    value: configRepository,
     child: MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: authCubit),
+        BlocProvider.value(value: configCubit),
         BlocProvider(create: (_) => ThemeCubit()),
       ],
       child: child,
@@ -25,19 +25,24 @@ Widget wrapWithAppProviders({
   );
 }
 
-/// [AuthRepository] whose stream never emits.
+/// [CalendarConfigRepository] whose stream never emits.
 ///
-/// Holds [AuthCubit] in `AuthState.unknown`, the state the app starts in
-/// before the real backend has answered.
-class SilentAuthRepository implements AuthRepository {
+/// Holds [CalendarConfigCubit] in `CalendarConfigState.unknown`, the state
+/// the app starts in before storage has answered.
+///
+/// [FakeCalendarConfigRepository] cannot stand in for this case — it emits
+/// its current value (`null` by default) on subscription and so resolves the
+/// gate to unconfigured.
+class SilentCalendarConfigRepository implements CalendarConfigRepository {
   @override
-  Stream<AuthUser?> get authStateChanges => const Stream.empty();
+  Stream<CalendarConfig?> get configChanges =>
+      const Stream<CalendarConfig?>.empty();
 
   @override
-  Future<void> login({required String email, required String password}) async {}
+  Future<void> save(CalendarConfig config) async {}
 
   @override
-  Future<void> logout() async {}
+  Future<void> clear() async {}
 
   @override
   Future<void> dispose() async {}

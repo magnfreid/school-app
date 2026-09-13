@@ -1,77 +1,79 @@
-import 'package:auth_repository/auth_repository.dart';
-import 'package:flutter/material.dart';
+import 'package:calendar_config_repository/calendar_config_repository.dart';
 import 'package:school_app/app/app.dart';
-import 'package:school_app/auth/cubit/auth_cubit.dart';
-import 'package:school_app/home/view/home_page.dart';
-import 'package:school_app/login/view/login_page.dart';
+import 'package:school_app/app/cubit/calendar_config_cubit.dart';
+import 'package:school_app/schedule/view/schedule_page.dart';
+import 'package:school_app/setup/view/setup_page.dart';
 import 'package:school_app/splash/view/splash_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'helpers/app_harness.dart';
 
+/// Builds a [FakeCalendarConfigRepository] and registers its own tear-down.
+FakeCalendarConfigRepository buildRepository({CalendarConfig? initialConfig}) {
+  final repository = FakeCalendarConfigRepository(initialConfig: initialConfig);
+  addTearDown(repository.dispose);
+  return repository;
+}
+
 /// Pumps [App] under the same providers `bootstrap.dart` installs.
 Future<void> _pumpApp(
   WidgetTester tester,
-  AuthRepository authRepository,
+  CalendarConfigRepository configRepository,
 ) async {
-  final authCubit = AuthCubit(authRepository: authRepository);
-  addTearDown(authCubit.close);
+  final configCubit = CalendarConfigCubit(configRepository: configRepository);
+  addTearDown(configCubit.close);
 
   await tester.pumpWidget(
     wrapWithAppProviders(
-      authRepository: authRepository,
-      authCubit: authCubit,
+      configRepository: configRepository,
+      configCubit: configCubit,
       child: const App(),
     ),
   );
 }
 
-/// Builds a [FakeAuthRepository] and registers its own tear-down.
-FakeAuthRepository buildRepository({AuthUser? initialUser}) {
-  final repository = FakeAuthRepository(initialUser: initialUser);
-  addTearDown(repository.dispose);
-  return repository;
-}
-
 void main() {
-  testWidgets('shows SplashPage while auth state is unknown', (tester) async {
-    // A repository that never emits leaves the cubit in AuthState.unknown.
-    await _pumpApp(tester, SilentAuthRepository());
+  testWidgets('shows SplashPage while config state is unknown', (tester) async {
+    // A repository that never emits leaves the cubit in
+    // CalendarConfigState.unknown.
+    await _pumpApp(tester, SilentCalendarConfigRepository());
     await tester.pump();
 
     expect(find.byType(SplashPage), findsOneWidget);
   });
 
-  testWidgets('shows LoginPage when unauthenticated', (tester) async {
+  testWidgets('shows SetupPage when unconfigured', (tester) async {
     await _pumpApp(tester, buildRepository());
     await tester.pumpAndSettle();
 
-    expect(find.byType(LoginPage), findsOneWidget);
+    expect(find.byType(SetupPage), findsOneWidget);
   });
 
-  testWidgets('shows HomePage when authenticated', (tester) async {
-    final authRepository = buildRepository(
-      initialUser: const AuthUser(id: 'u1'),
+  testWidgets('shows SchedulePage when configured', (tester) async {
+    final configRepository = buildRepository(
+      initialConfig: const CalendarConfig(calendarId: 'cal-1'),
     );
 
-    await _pumpApp(tester, authRepository);
+    await _pumpApp(tester, configRepository);
     await tester.pumpAndSettle();
 
-    expect(find.byType(HomePage), findsOneWidget);
+    expect(find.byType(SchedulePage), findsOneWidget);
   });
 
-  testWidgets('signing out returns the user to LoginPage', (tester) async {
-    final authRepository = buildRepository(
-      initialUser: const AuthUser(id: 'u1'),
+  testWidgets('clearing the config returns the user to SetupPage', (
+    tester,
+  ) async {
+    final configRepository = buildRepository(
+      initialConfig: const CalendarConfig(calendarId: 'cal-1'),
     );
 
-    await _pumpApp(tester, authRepository);
+    await _pumpApp(tester, configRepository);
     await tester.pumpAndSettle();
-    expect(find.byType(HomePage), findsOneWidget);
+    expect(find.byType(SchedulePage), findsOneWidget);
 
-    await tester.tap(find.byIcon(Icons.logout));
+    await configRepository.clear();
     await tester.pumpAndSettle();
 
-    expect(find.byType(LoginPage), findsOneWidget);
+    expect(find.byType(SetupPage), findsOneWidget);
   });
 }

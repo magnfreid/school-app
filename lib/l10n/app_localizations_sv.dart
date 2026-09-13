@@ -9,36 +9,29 @@ class AppLocalizationsSv extends AppLocalizations {
   AppLocalizationsSv([String locale = 'sv']) : super(locale);
 
   @override
-  String get appTitle => 'Flutter Starter';
+  String get appTitle => 'Skolschema';
 
   @override
-  String get welcomeHeadline => 'Välkommen';
+  String get scheduleTitle => 'Schema';
 
   @override
-  String get loginTitle => 'Logga in';
+  String get schedulePlaceholder => 'Schema — kommer snart';
 
   @override
-  String get loginButton => 'Logga in';
+  String get setupTitle => 'Konfiguration';
 
   @override
-  String get loginEmailLabel => 'E-post';
+  String get setupPlaceholder => 'Konfiguration — kommer snart';
 
   @override
-  String get loginPasswordLabel => 'Lösenord';
+  String get settingsTitle => 'Inställningar';
+
+  @override
+  String get settingsPlaceholder => 'Inställningar — kommer snart';
 
   @override
   String get themeSwitcherTooltip => 'Byt tema';
 
   @override
-  String get signOutTooltip => 'Logga ut';
-
-  @override
   String get splashLabel => 'Startskärm';
-
-  @override
-  String get loginFailed =>
-      'Kunde inte logga in. Kontrollera dina uppgifter och försök igen.';
-
-  @override
-  String get loginUnexpectedError => 'Något gick fel. Försök igen.';
 }
