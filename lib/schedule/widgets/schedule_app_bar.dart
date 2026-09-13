@@ -53,70 +53,73 @@ class ScheduleAppBar extends StatelessWidget {
       height: sizes.appBarHeight,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: spacing.step20),
-        child: Row(
-          spacing: spacing.step14,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Stack(
+          alignment: Alignment.center,
           children: [
-            Text(
-              weekLabel,
-              style: scheduleText.weekLabel.copyWith(color: colors.onSurface),
-            ),
-            Text(
-              weekRange,
-              style: scheduleText.weekRange.copyWith(
-                color: colors.onSurfaceVariant,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: spacing.small),
-              child: WeekNavArrows(
-                onPrevious: onPreviousWeek,
-                onNext: onNextWeek,
-              ),
-            ),
-            const Spacer(),
             Row(
-              spacing: spacing.step7,
+              spacing: spacing.step14,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  width: sizes.syncDotSize,
-                  height: sizes.syncDotSize,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: syncHealthy
-                        ? scheduleColors.syncOk
-                        : colors.onSurfaceVariant,
+                Text(
+                  weekLabel,
+                  style: scheduleText.weekLabel.copyWith(
+                    color: colors.onSurface,
                   ),
                 ),
                 Text(
-                  syncLabel,
-                  style: scheduleText.syncLabel.copyWith(
+                  weekRange,
+                  style: scheduleText.weekRange.copyWith(
                     color: colors.onSurfaceVariant,
+                  ),
+                ),
+                const Spacer(),
+                Row(
+                  spacing: spacing.step7,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: sizes.syncDotSize,
+                      height: sizes.syncDotSize,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: syncHealthy
+                            ? scheduleColors.syncOk
+                            : colors.onSurfaceVariant,
+                      ),
+                    ),
+                    Text(
+                      syncLabel,
+                      style: scheduleText.syncLabel.copyWith(
+                        color: colors.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: spacing.step14),
+                  child: Row(
+                    spacing: spacing.step6,
+                    children: [
+                      _IconCircle(
+                        icon: Icons.grid_view_outlined,
+                        tooltip: l10n.scheduleAlternateViewTooltip,
+                        onTap: null,
+                      ),
+                      _IconCircle(
+                        icon: Icons.settings_outlined,
+                        tooltip: l10n.scheduleSettingsTooltip,
+                        // push, not go, so the stub settings page's auto
+                        // back button works.
+                        onTap: () => context.push(AppRoutes.settings.path),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-            Padding(
-              padding: EdgeInsets.only(left: spacing.step14),
-              child: Row(
-                spacing: spacing.step6,
-                children: [
-                  _IconCircle(
-                    icon: Icons.grid_view_outlined,
-                    tooltip: l10n.scheduleAlternateViewTooltip,
-                    onTap: null,
-                  ),
-                  _IconCircle(
-                    icon: Icons.settings_outlined,
-                    tooltip: l10n.scheduleSettingsTooltip,
-                    // push, not go, so the stub settings page's auto back
-                    // button works.
-                    onTap: () => context.push(AppRoutes.settings.path),
-                  ),
-                ],
-              ),
-            ),
+            // Centred in the app bar independent of the row above, so it
+            // never shifts when the week label/range text changes width.
+            WeekNavArrows(onPrevious: onPreviousWeek, onNext: onNextWeek),
           ],
         ),
       ),

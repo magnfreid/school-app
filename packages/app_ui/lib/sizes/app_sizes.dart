@@ -16,8 +16,6 @@ class AppSizes {
     this.iconGlyphSize = 21,
     this.navArrowWidth = 48,
     this.navArrowHeight = 44,
-    this.navArrowGlyphWidth = 31,
-    this.navArrowGlyphHeight = 22,
     this.syncDotSize = 7,
     this.crayonRingWidth = 126,
     this.crayonRingHeight = 56,
@@ -68,12 +66,6 @@ class AppSizes {
 
   /// Week View: height of a week-nav arrow's tap target.
   final double navArrowHeight;
-
-  /// Week View: width of a week-nav arrow's painted glyph.
-  final double navArrowGlyphWidth;
-
-  /// Week View: height of a week-nav arrow's painted glyph.
-  final double navArrowGlyphHeight;
 
   /// Week View: diameter of the sync-status dot.
   final double syncDotSize;
