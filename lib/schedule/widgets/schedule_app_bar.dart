@@ -56,8 +56,11 @@ class ScheduleAppBar extends StatelessWidget {
         child: Stack(
           alignment: Alignment.center,
           children: [
+            // The label and the right group keep their natural width and a
+            // Spacer soaks up the rest, exactly as before — nothing here is
+            // forced into an artificial half-and-half split, so an empty
+            // label (loading/failure) can't starve the wider right group.
             Row(
-              spacing: spacing.step14,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
@@ -66,6 +69,7 @@ class ScheduleAppBar extends StatelessWidget {
                     color: colors.onSurface,
                   ),
                 ),
+                SizedBox(width: spacing.step14),
                 Text(
                   weekRange,
                   style: scheduleText.weekRange.copyWith(
@@ -95,30 +99,28 @@ class ScheduleAppBar extends StatelessWidget {
                     ),
                   ],
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: spacing.step14),
-                  child: Row(
-                    spacing: spacing.step6,
-                    children: [
-                      _IconCircle(
-                        icon: Icons.grid_view_outlined,
-                        tooltip: l10n.scheduleAlternateViewTooltip,
-                        onTap: null,
-                      ),
-                      _IconCircle(
-                        icon: Icons.settings_outlined,
-                        tooltip: l10n.scheduleSettingsTooltip,
-                        // push, not go, so the stub settings page's auto
-                        // back button works.
-                        onTap: () => context.push(AppRoutes.settings.path),
-                      ),
-                    ],
-                  ),
+                SizedBox(width: spacing.step14),
+                Row(
+                  spacing: spacing.step6,
+                  children: [
+                    _IconCircle(
+                      icon: Icons.grid_view_outlined,
+                      tooltip: l10n.scheduleAlternateViewTooltip,
+                      onTap: null,
+                    ),
+                    _IconCircle(
+                      icon: Icons.settings_outlined,
+                      tooltip: l10n.scheduleSettingsTooltip,
+                      // push, not go, so the stub settings page's auto back
+                      // button works.
+                      onTap: () => context.push(AppRoutes.settings.path),
+                    ),
+                  ],
                 ),
               ],
             ),
-            // Centred in the app bar independent of the row above, so it
-            // never shifts when the week label/range text changes width.
+            // Centred on the full bar width independent of the row above, so
+            // it never shifts when the week label/range text changes width.
             WeekNavArrows(onPrevious: onPreviousWeek, onNext: onNextWeek),
           ],
         ),
