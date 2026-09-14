@@ -61,7 +61,10 @@ class _WeekPageViewState extends State<WeekPageView> {
     if ((target - current).abs() == 1) {
       _controller.animateToPage(
         target,
-        duration: Durations.short3,
+        // Durations.short3 (150ms) reads as a flicker rather than a slide on
+        // the target tablet's slower panel — medium2 is long enough to
+        // register as motion while staying well under a second.
+        duration: Durations.medium2,
         curve: Curves.easeOut,
       );
     } else {
