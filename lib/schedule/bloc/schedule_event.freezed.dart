@@ -55,13 +55,15 @@ extension ScheduleBlocEventPatterns on ScheduleBlocEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ScheduleStarted value)?  started,TResult Function( ScheduleWeekChanged value)?  weekChanged,TResult Function( ScheduleRefreshRequested value)?  refreshRequested,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ScheduleStarted value)?  started,TResult Function( ScheduleWeekChanged value)?  weekChanged,TResult Function( ScheduleRefreshRequested value)?  refreshRequested,TResult Function( ScheduleIdleTimeoutElapsed value)?  idleTimeoutElapsed,TResult Function( ScheduleAnchorChanged value)?  anchorChanged,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case ScheduleStarted() when started != null:
 return started(_that);case ScheduleWeekChanged() when weekChanged != null:
 return weekChanged(_that);case ScheduleRefreshRequested() when refreshRequested != null:
-return refreshRequested(_that);case _:
+return refreshRequested(_that);case ScheduleIdleTimeoutElapsed() when idleTimeoutElapsed != null:
+return idleTimeoutElapsed(_that);case ScheduleAnchorChanged() when anchorChanged != null:
+return anchorChanged(_that);case _:
   return orElse();
 
 }
@@ -79,13 +81,15 @@ return refreshRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ScheduleStarted value)  started,required TResult Function( ScheduleWeekChanged value)  weekChanged,required TResult Function( ScheduleRefreshRequested value)  refreshRequested,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ScheduleStarted value)  started,required TResult Function( ScheduleWeekChanged value)  weekChanged,required TResult Function( ScheduleRefreshRequested value)  refreshRequested,required TResult Function( ScheduleIdleTimeoutElapsed value)  idleTimeoutElapsed,required TResult Function( ScheduleAnchorChanged value)  anchorChanged,}){
 final _that = this;
 switch (_that) {
 case ScheduleStarted():
 return started(_that);case ScheduleWeekChanged():
 return weekChanged(_that);case ScheduleRefreshRequested():
-return refreshRequested(_that);}
+return refreshRequested(_that);case ScheduleIdleTimeoutElapsed():
+return idleTimeoutElapsed(_that);case ScheduleAnchorChanged():
+return anchorChanged(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -99,13 +103,15 @@ return refreshRequested(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ScheduleStarted value)?  started,TResult? Function( ScheduleWeekChanged value)?  weekChanged,TResult? Function( ScheduleRefreshRequested value)?  refreshRequested,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ScheduleStarted value)?  started,TResult? Function( ScheduleWeekChanged value)?  weekChanged,TResult? Function( ScheduleRefreshRequested value)?  refreshRequested,TResult? Function( ScheduleIdleTimeoutElapsed value)?  idleTimeoutElapsed,TResult? Function( ScheduleAnchorChanged value)?  anchorChanged,}){
 final _that = this;
 switch (_that) {
 case ScheduleStarted() when started != null:
 return started(_that);case ScheduleWeekChanged() when weekChanged != null:
 return weekChanged(_that);case ScheduleRefreshRequested() when refreshRequested != null:
-return refreshRequested(_that);case _:
+return refreshRequested(_that);case ScheduleIdleTimeoutElapsed() when idleTimeoutElapsed != null:
+return idleTimeoutElapsed(_that);case ScheduleAnchorChanged() when anchorChanged != null:
+return anchorChanged(_that);case _:
   return null;
 
 }
@@ -122,12 +128,14 @@ return refreshRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( int offset)?  weekChanged,TResult Function()?  refreshRequested,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( int offset)?  weekChanged,TResult Function()?  refreshRequested,TResult Function()?  idleTimeoutElapsed,TResult Function()?  anchorChanged,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ScheduleStarted() when started != null:
 return started();case ScheduleWeekChanged() when weekChanged != null:
 return weekChanged(_that.offset);case ScheduleRefreshRequested() when refreshRequested != null:
-return refreshRequested();case _:
+return refreshRequested();case ScheduleIdleTimeoutElapsed() when idleTimeoutElapsed != null:
+return idleTimeoutElapsed();case ScheduleAnchorChanged() when anchorChanged != null:
+return anchorChanged();case _:
   return orElse();
 
 }
@@ -145,12 +153,14 @@ return refreshRequested();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( int offset)  weekChanged,required TResult Function()  refreshRequested,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( int offset)  weekChanged,required TResult Function()  refreshRequested,required TResult Function()  idleTimeoutElapsed,required TResult Function()  anchorChanged,}) {final _that = this;
 switch (_that) {
 case ScheduleStarted():
 return started();case ScheduleWeekChanged():
 return weekChanged(_that.offset);case ScheduleRefreshRequested():
-return refreshRequested();}
+return refreshRequested();case ScheduleIdleTimeoutElapsed():
+return idleTimeoutElapsed();case ScheduleAnchorChanged():
+return anchorChanged();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -164,12 +174,14 @@ return refreshRequested();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( int offset)?  weekChanged,TResult? Function()?  refreshRequested,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( int offset)?  weekChanged,TResult? Function()?  refreshRequested,TResult? Function()?  idleTimeoutElapsed,TResult? Function()?  anchorChanged,}) {final _that = this;
 switch (_that) {
 case ScheduleStarted() when started != null:
 return started();case ScheduleWeekChanged() when weekChanged != null:
 return weekChanged(_that.offset);case ScheduleRefreshRequested() when refreshRequested != null:
-return refreshRequested();case _:
+return refreshRequested();case ScheduleIdleTimeoutElapsed() when idleTimeoutElapsed != null:
+return idleTimeoutElapsed();case ScheduleAnchorChanged() when anchorChanged != null:
+return anchorChanged();case _:
   return null;
 
 }
@@ -299,6 +311,70 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'ScheduleBlocEvent.refreshRequested()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class ScheduleIdleTimeoutElapsed implements ScheduleBlocEvent {
+  const ScheduleIdleTimeoutElapsed();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScheduleIdleTimeoutElapsed);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'ScheduleBlocEvent.idleTimeoutElapsed()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class ScheduleAnchorChanged implements ScheduleBlocEvent {
+  const ScheduleAnchorChanged();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScheduleAnchorChanged);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'ScheduleBlocEvent.anchorChanged()';
 }
 
 
