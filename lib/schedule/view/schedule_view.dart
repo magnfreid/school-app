@@ -9,7 +9,7 @@ import 'package:school_app/schedule/extensions/schedule_text_extension.dart';
 import 'package:school_app/schedule/widgets/next_event_hero.dart';
 import 'package:school_app/schedule/widgets/schedule_app_bar.dart';
 import 'package:school_app/schedule/widgets/special_event_lane.dart';
-import 'package:school_app/schedule/widgets/week_grid.dart';
+import 'package:school_app/schedule/widgets/week_page_view.dart';
 
 /// Renders the four bands of the Week View from [ScheduleBloc]'s state.
 ///
@@ -66,11 +66,6 @@ class ScheduleView extends StatelessWidget {
           _ => null,
         };
 
-        final gridKey = switch (state) {
-          ScheduleLoaded(:final week) => ValueKey(week.weekStart),
-          _ => const ValueKey('empty'),
-        };
-
         return Scaffold(
           backgroundColor: context.colors.surface,
           body: MediaQuery.withNoTextScaling(
@@ -92,12 +87,11 @@ class ScheduleView extends StatelessWidget {
                 NextEventHero(nextEvent: nextEvent, emptyMessage: emptyMessage),
                 SpecialEventLane(days: days, weekSpecial: weekSpecial),
                 Expanded(
-                  child: AnimatedSwitcher(
-                    duration: Durations.short3,
-                    child: KeyedSubtree(
-                      key: gridKey,
-                      child: WeekGrid(days: days),
-                    ),
+                  child: WeekPageView(
+                    days: days,
+                    weekOffset: state.weekOffset,
+                    onWeekChanged: (offset) =>
+                        bloc.add(ScheduleBlocEvent.weekChanged(offset)),
                   ),
                 ),
               ],

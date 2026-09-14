@@ -1,6 +1,5 @@
-import 'dart:ui';
-
 import 'package:calendar_config_repository/calendar_config_repository.dart';
+import 'package:flutter/material.dart';
 import 'package:school_app/app/app.dart';
 import 'package:school_app/app/cubit/calendar_config_cubit.dart';
 import 'package:school_app/l10n/extensions/app_localizations_extension.dart';
@@ -72,6 +71,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(SchedulePage), findsOneWidget);
+
+    // Disposes the tree so `BlocProvider` closes the `ScheduleBloc` and the
+    // anchor `Timer.periodic` is cancelled.
+    await tester.pumpWidget(const SizedBox.shrink());
   });
 
   testWidgets('clearing the config returns the user to SetupPage', (
@@ -89,6 +92,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(SetupPage), findsOneWidget);
+
+    // Disposes the tree so `BlocProvider` closes the `ScheduleBloc` and the
+    // anchor `Timer.periodic` is cancelled.
+    await tester.pumpWidget(const SizedBox.shrink());
   });
 
   testWidgets('tapping the settings button opens SettingsPage', (tester) async {
@@ -105,5 +112,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(SettingsPage), findsOneWidget);
+
+    // Disposes the tree so `BlocProvider` closes the `ScheduleBloc` and the
+    // anchor `Timer.periodic` is cancelled.
+    await tester.pumpWidget(const SizedBox.shrink());
   });
 }

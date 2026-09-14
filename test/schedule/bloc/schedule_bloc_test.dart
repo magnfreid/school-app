@@ -102,8 +102,9 @@ void main() {
       );
 
       expect(states, [isA<ScheduleLoaded>()]);
-      // The anchor drops time-of-day (§4.6): only the date carries over.
-      expect(repository.fetchCalls.last, DateTime(2024, 1, 18));
+      // The anchor is the Monday of the ISO week containing "now" (Jan 8),
+      // not "now" itself (Jan 11) — offset 1 lands on Jan 15, not Jan 18.
+      expect(repository.fetchCalls.last, DateTime(2024, 1, 15));
     });
 
     test('droppable() drops a second in-flight refresh', () async {
@@ -137,6 +138,294 @@ void main() {
       // dropped. Without droppable() this would be 3.
       expect(repository.fetchCalls.length, 2);
       expect(states.whereType<ScheduleLoaded>().length, 2);
+    });
+
+    test('the anchor on a weekday is this ISO week', () async {
+      final repository = FakeScheduleRepository(today: fixedToday);
+      final bloc = ScheduleBloc(
+        scheduleRepository: repository,
+        now: () => DateTime(2024, 1, 11, 8),
+      );
+      addTearDown(bloc.close);
+
+      bloc.add(const ScheduleBlocEvent.started());
+      await bloc.stream.firstWhere((s) => s is ScheduleLoaded);
+
+      expect(repository.fetchCalls.single, DateTime(2024, 1, 8));
+    });
+
+    test('the anchor on a Saturday is next ISO week', () async {
+      final repository = FakeScheduleRepository(today: DateTime(2024, 1, 13));
+      final bloc = ScheduleBloc(
+        scheduleRepository: repository,
+        now: () => DateTime(2024, 1, 13, 8),
+      );
+      addTearDown(bloc.close);
+
+      bloc.add(const ScheduleBlocEvent.started());
+      await bloc.stream.firstWhere((s) => s is ScheduleLoaded);
+
+      expect(repository.fetchCalls.single, DateTime(2024, 1, 15));
+    });
+
+    test('the anchor on a Sunday is next ISO week', () async {
+      final repository = FakeScheduleRepository(today: DateTime(2024, 1, 14));
+      final bloc = ScheduleBloc(
+        scheduleRepository: repository,
+        now: () => DateTime(2024, 1, 14, 8),
+      );
+      addTearDown(bloc.close);
+
+      bloc.add(const ScheduleBlocEvent.started());
+      await bloc.stream.firstWhere((s) => s is ScheduleLoaded);
+
+      expect(repository.fetchCalls.single, DateTime(2024, 1, 15));
+    });
+
+    test('weekChanged clamps to the window radius (high)', () async {
+      final repository = FakeScheduleRepository(today: fixedToday);
+      final bloc = ScheduleBloc(
+        scheduleRepository: repository,
+        now: () => DateTime(2024, 1, 11, 8),
+      );
+      addTearDown(bloc.close);
+
+      bloc.add(const ScheduleBlocEvent.started());
+      await bloc.stream.firstWhere((s) => s is ScheduleLoaded);
+
+      bloc.add(const ScheduleBlocEvent.weekChanged(5));
+      final clamped =
+          await bloc.stream.firstWhere(
+                (s) => s is ScheduleLoaded && s.weekOffset == 2,
+              )
+              as ScheduleLoaded;
+
+      expect(clamped.weekOffset, 2);
+      expect(repository.fetchCalls.last, DateTime(2024, 1, 22));
+    });
+
+    test('weekChanged clamps to the window radius (low)', () async {
+      final repository = FakeScheduleRepository(today: fixedToday);
+      final bloc = ScheduleBloc(
+        scheduleRepository: repository,
+        now: () => DateTime(2024, 1, 11, 8),
+      );
+      addTearDown(bloc.close);
+
+      bloc.add(const ScheduleBlocEvent.started());
+      await bloc.stream.firstWhere((s) => s is ScheduleLoaded);
+
+      bloc.add(const ScheduleBlocEvent.weekChanged(-5));
+      final clamped =
+          await bloc.stream.firstWhere(
+                (s) => s is ScheduleLoaded && s.weekOffset == -2,
+              )
+              as ScheduleLoaded;
+
+      expect(clamped.weekOffset, -2);
+    });
+
+    test('weekChanged with the current offset is a no-op', () async {
+      final repository = FakeScheduleRepository(today: fixedToday);
+      final bloc = ScheduleBloc(
+        scheduleRepository: repository,
+        now: () => DateTime(2024, 1, 11, 8),
+      );
+      addTearDown(bloc.close);
+
+      bloc.add(const ScheduleBlocEvent.started());
+      await bloc.stream.firstWhere((s) => s is ScheduleLoaded);
+      bloc.add(const ScheduleBlocEvent.weekChanged(1));
+      await bloc.stream.firstWhere(
+        (s) => s is ScheduleLoaded && s.weekOffset == 1,
+      );
+
+      final callsAfterFirstNav = repository.fetchCalls.length;
+
+      // This pins the echo guard: without it, `animateToPage`'s
+      // `onPageChanged` feedback loop refetches on every arrow tap.
+      bloc.add(const ScheduleBlocEvent.weekChanged(1));
+      await Future<void>.delayed(const Duration(milliseconds: 20));
+
+      expect(repository.fetchCalls.length, callsAfterFirstNav);
+    });
+
+    test('restartable() keeps only the final weekChanged in flight', () async {
+      final repository = FakeScheduleRepository(
+        today: fixedToday,
+        fetchDelay: const Duration(milliseconds: 30),
+      );
+      final bloc = ScheduleBloc(
+        scheduleRepository: repository,
+        now: () => DateTime(2024, 1, 11, 8),
+      );
+      addTearDown(bloc.close);
+
+      bloc.add(const ScheduleBlocEvent.started());
+      await bloc.stream.firstWhere((s) => s is ScheduleLoaded);
+
+      final offsets = <int>[];
+      final subscription = bloc.stream.listen((s) {
+        if (s is ScheduleLoaded) offsets.add(s.weekOffset);
+      });
+      addTearDown(subscription.cancel);
+
+      bloc.add(const ScheduleBlocEvent.weekChanged(1));
+      bloc.add(const ScheduleBlocEvent.weekChanged(2));
+      await bloc.stream.firstWhere(
+        (s) => s is ScheduleLoaded && s.weekOffset == 2,
+      );
+
+      // Asserting only the final state would pass with the transformer
+      // removed — assert the whole list.
+      expect(offsets, [2]);
+    });
+
+    test('idle timeout auto-returns to the anchor week', () async {
+      final repository = FakeScheduleRepository(today: fixedToday);
+      final bloc = ScheduleBloc(
+        scheduleRepository: repository,
+        now: () => DateTime(2024, 1, 11, 8),
+        idleTimeout: const Duration(milliseconds: 40),
+      );
+      addTearDown(bloc.close);
+
+      bloc.add(const ScheduleBlocEvent.started());
+      await bloc.stream.firstWhere((s) => s is ScheduleLoaded);
+
+      bloc.add(const ScheduleBlocEvent.weekChanged(1));
+      await bloc.stream.firstWhere(
+        (s) => s is ScheduleLoaded && s.weekOffset == 1,
+      );
+
+      final autoReturned =
+          await bloc.stream.firstWhere(
+                (s) => s is ScheduleLoaded && s.weekOffset == 0,
+              )
+              as ScheduleLoaded;
+
+      expect(autoReturned.weekOffset, 0);
+    });
+
+    test('the idle timer restarts on every navigation', () async {
+      final repository = FakeScheduleRepository(today: fixedToday);
+      final bloc = ScheduleBloc(
+        scheduleRepository: repository,
+        now: () => DateTime(2024, 1, 11, 8),
+        idleTimeout: const Duration(milliseconds: 60),
+      );
+      addTearDown(bloc.close);
+
+      bloc.add(const ScheduleBlocEvent.started());
+      await bloc.stream.firstWhere((s) => s is ScheduleLoaded);
+
+      bloc.add(const ScheduleBlocEvent.weekChanged(1));
+      await bloc.stream.firstWhere(
+        (s) => s is ScheduleLoaded && s.weekOffset == 1,
+      );
+      await Future<void>.delayed(const Duration(milliseconds: 40));
+
+      bloc.add(const ScheduleBlocEvent.weekChanged(2));
+      await bloc.stream.firstWhere(
+        (s) => s is ScheduleLoaded && s.weekOffset == 2,
+      );
+      await Future<void>.delayed(const Duration(milliseconds: 40));
+
+      // No offset-0 auto-return has happened yet: the state is still the
+      // second manually chosen offset.
+      expect(
+        bloc.state,
+        isA<ScheduleLoaded>().having((s) => s.weekOffset, 'weekOffset', 2),
+      );
+    });
+
+    test('idle timeout at offset 0 is a no-op', () async {
+      final repository = FakeScheduleRepository(today: fixedToday);
+      final bloc = ScheduleBloc(
+        scheduleRepository: repository,
+        now: () => DateTime(2024, 1, 11, 8),
+        idleTimeout: const Duration(milliseconds: 30),
+      );
+      addTearDown(bloc.close);
+
+      bloc.add(const ScheduleBlocEvent.started());
+      await bloc.stream.firstWhere((s) => s is ScheduleLoaded);
+
+      final callsAfterStart = repository.fetchCalls.length;
+
+      // Restarts the idle timer without changing the loaded week (same
+      // offset as current).
+      bloc.add(const ScheduleBlocEvent.weekChanged(0));
+      await Future<void>.delayed(const Duration(milliseconds: 60));
+
+      expect(repository.fetchCalls.length, callsAfterStart);
+    });
+
+    test('an anchor rollover resets a manually chosen offset', () async {
+      var clock = DateTime(2024, 1, 12, 20); // Friday evening.
+      final repository = FakeScheduleRepository(today: DateTime(2024, 1, 12));
+      final bloc = ScheduleBloc(
+        scheduleRepository: repository,
+        now: () => clock,
+        anchorCheckInterval: const Duration(milliseconds: 20),
+      );
+      addTearDown(bloc.close);
+
+      bloc.add(const ScheduleBlocEvent.started());
+      await bloc.stream.firstWhere((s) => s is ScheduleLoaded);
+
+      bloc.add(const ScheduleBlocEvent.weekChanged(1));
+      await bloc.stream.firstWhere(
+        (s) => s is ScheduleLoaded && s.weekOffset == 1,
+      );
+
+      clock = DateTime(2024, 1, 13, 8); // Saturday: the anchor rolls over.
+
+      final rolledOver =
+          await bloc.stream.firstWhere(
+                (s) => s is ScheduleLoaded && s.weekOffset == 0,
+              )
+              as ScheduleLoaded;
+
+      expect(rolledOver.weekOffset, 0);
+      expect(repository.fetchCalls.last, DateTime(2024, 1, 15));
+    });
+
+    test('an anchor tick with no rollover does not refetch', () async {
+      final repository = FakeScheduleRepository(today: fixedToday);
+      final bloc = ScheduleBloc(
+        scheduleRepository: repository,
+        now: () => DateTime(2024, 1, 11, 8),
+        anchorCheckInterval: const Duration(milliseconds: 20),
+      );
+      addTearDown(bloc.close);
+
+      bloc.add(const ScheduleBlocEvent.started());
+      await bloc.stream.firstWhere((s) => s is ScheduleLoaded);
+
+      // Without pinning this, a bloc that reloads on every tick looks
+      // correct in the app and hammers the repository.
+      await Future<void>.delayed(const Duration(milliseconds: 80));
+
+      expect(repository.fetchCalls.length, 1);
+    });
+
+    test('close() cancels both timers', () async {
+      final repository = FakeScheduleRepository(today: fixedToday);
+      final bloc = ScheduleBloc(
+        scheduleRepository: repository,
+        now: () => DateTime(2024, 1, 11, 8),
+        idleTimeout: const Duration(milliseconds: 10),
+        anchorCheckInterval: const Duration(milliseconds: 10),
+      );
+
+      bloc.add(const ScheduleBlocEvent.started());
+      await bloc.stream.firstWhere((s) => s is ScheduleLoaded);
+
+      await bloc.close();
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+
+      expect(repository.fetchCalls.length, 1);
     });
 
     blocTest<ScheduleBloc, ScheduleState>(

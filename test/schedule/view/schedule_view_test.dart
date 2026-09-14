@@ -222,6 +222,27 @@ void main() {
       expect(find.textContaining('day left'), findsNothing);
     });
 
+    testWidgets(
+      'a loaded state renders one PageView with only the current page',
+      (tester) async {
+        final week = _week();
+        await _pumpScheduleView(
+          tester,
+          ScheduleState.loaded(
+            weekOffset: 0,
+            week: week,
+            lastSyncedAt: DateTime(2024, 1, 11, 8),
+            days: _days(week),
+          ),
+        );
+
+        expect(find.byType(PageView), findsOneWidget);
+        // Pins "only the current page renders" — not `days.length * 5` for
+        // the whole ±2-week window.
+        expect(find.byType(DayColumn), findsNWidgets(5));
+      },
+    );
+
     testWidgets('a 6-day week renders six day columns', (tester) async {
       final week = _week();
       await _pumpScheduleView(
