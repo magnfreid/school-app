@@ -144,13 +144,24 @@ class SecureStorageCalendarConfigRepository
 
   @override
   Future<void> clear() async {
+    // Best-effort: attempt both deletes so a failure on one key never
+    // strands the other — see the same pattern in save()'s catch above.
+    Object? firstError;
     try {
       await _store.delete(calendarIdKey);
+    } catch (error) {
+      firstError = error;
+    }
+    try {
       await _store.delete(serviceAccountKeyKey);
     } catch (error) {
+      firstError ??= error;
+    }
+
+    if (firstError != null) {
       throw CalendarConfigException(
         'Could not clear the calendar configuration.',
-        cause: error,
+        cause: firstError,
       );
     }
 

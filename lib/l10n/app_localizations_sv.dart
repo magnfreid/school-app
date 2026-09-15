@@ -146,7 +146,28 @@ class AppLocalizationsSv extends AppLocalizations {
   String get settingsTitle => 'Inställningar';
 
   @override
-  String get settingsPlaceholder => 'Inställningar — kommer snart';
+  String get settingsUnsubscribeDescription =>
+      'Om du avslutar prenumerationen tas kalender-ID och tjänstekontots nyckel bort från den här enheten. Ingenting ändras i Google Kalender.';
+
+  @override
+  String get settingsUnsubscribeButton => 'Avsluta prenumeration';
+
+  @override
+  String get settingsUnsubscribeDialogTitle => 'Avsluta prenumerationen?';
+
+  @override
+  String get settingsUnsubscribeDialogBody =>
+      'Kalender-ID och tjänstekontots nyckel raderas från den här enheten. Du behöver ange dem igen för att se schemat.';
+
+  @override
+  String get settingsUnsubscribeDialogCancel => 'Avbryt';
+
+  @override
+  String get settingsUnsubscribeDialogConfirm => 'Avsluta';
+
+  @override
+  String get settingsUnsubscribeFailed =>
+      'Kunde inte avsluta prenumerationen. Försök igen.';
 
   @override
   String get themeSwitcherTooltip => 'Byt tema';
