@@ -10,6 +10,10 @@ resolution: workspace
 
 dependencies:
   freezed_annotation: ^3.0.0
+  calendar_config_repository:
+    path: ../calendar_config_repository
+  googleapis: ^14.0.0
+  googleapis_auth: ^2.0.0
 
 dev_dependencies:
   test: ^1.24.0

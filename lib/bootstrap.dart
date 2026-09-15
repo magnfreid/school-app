@@ -73,7 +73,9 @@ Future<void> bootstrap() async {
           lazy: false,
         ),
         RepositoryProvider<ScheduleRepository>(
-          create: (_) => FakeScheduleRepository(),
+          create: (context) => GoogleCalendarScheduleRepository(
+            configRepository: context.read<CalendarConfigRepository>(),
+          ),
           dispose: (repository) => unawaited(repository.dispose()),
           lazy: false,
         ),
