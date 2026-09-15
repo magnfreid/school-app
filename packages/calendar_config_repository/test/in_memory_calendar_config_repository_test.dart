@@ -1,5 +1,7 @@
 import 'package:calendar_config_repository/calendar_config_repository.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+const _testKey = ServiceAccountKey('{"placeholder":"not-a-real-key"}');
 
 void main() {
   group('InMemoryCalendarConfigRepository', () {
@@ -14,7 +16,12 @@ void main() {
         'anything happens', () {
       expect(
         repository.configChanges,
-        emits(const CalendarConfig(calendarId: 'in-memory-calendar')),
+        emits(
+          const CalendarConfig(
+            calendarId: 'in-memory-calendar',
+            serviceAccountKey: _testKey,
+          ),
+        ),
       );
     });
 
@@ -22,19 +29,33 @@ void main() {
       expect(
         repository.configChanges,
         emitsInOrder([
-          const CalendarConfig(calendarId: 'in-memory-calendar'),
-          const CalendarConfig(calendarId: 'new-calendar'),
+          const CalendarConfig(
+            calendarId: 'in-memory-calendar',
+            serviceAccountKey: _testKey,
+          ),
+          const CalendarConfig(
+            calendarId: 'new-calendar',
+            serviceAccountKey: _testKey,
+          ),
         ]),
       );
 
-      await repository.save(const CalendarConfig(calendarId: 'new-calendar'));
+      await repository.save(
+        const CalendarConfig(
+          calendarId: 'new-calendar',
+          serviceAccountKey: _testKey,
+        ),
+      );
     });
 
     test('clear emits null', () async {
       expect(
         repository.configChanges,
         emitsInOrder([
-          const CalendarConfig(calendarId: 'in-memory-calendar'),
+          const CalendarConfig(
+            calendarId: 'in-memory-calendar',
+            serviceAccountKey: _testKey,
+          ),
           isNull,
         ]),
       );
@@ -45,13 +66,20 @@ void main() {
     test('an empty calendarId throws CalendarConfigException and leaves the '
         'previous config on the stream', () async {
       await expectLater(
-        () => repository.save(const CalendarConfig(calendarId: '')),
+        () => repository.save(
+          const CalendarConfig(calendarId: '', serviceAccountKey: _testKey),
+        ),
         throwsA(isA<CalendarConfigException>()),
       );
 
       await expectLater(
         repository.configChanges,
-        emits(const CalendarConfig(calendarId: 'in-memory-calendar')),
+        emits(
+          const CalendarConfig(
+            calendarId: 'in-memory-calendar',
+            serviceAccountKey: _testKey,
+          ),
+        ),
       );
     });
 
@@ -59,7 +87,10 @@ void main() {
       // The 300ms delay means dispose() can land mid-flight. Adding to a
       // closed StreamController throws "Cannot add new events after close".
       final save = repository.save(
-        const CalendarConfig(calendarId: 'new-calendar'),
+        const CalendarConfig(
+          calendarId: 'new-calendar',
+          serviceAccountKey: _testKey,
+        ),
       );
       await repository.dispose();
 
@@ -67,11 +98,21 @@ void main() {
     });
 
     test('replays the current config to a late subscriber', () async {
-      await repository.save(const CalendarConfig(calendarId: 'new-calendar'));
+      await repository.save(
+        const CalendarConfig(
+          calendarId: 'new-calendar',
+          serviceAccountKey: _testKey,
+        ),
+      );
 
       await expectLater(
         repository.configChanges,
-        emits(const CalendarConfig(calendarId: 'new-calendar')),
+        emits(
+          const CalendarConfig(
+            calendarId: 'new-calendar',
+            serviceAccountKey: _testKey,
+          ),
+        ),
       );
     });
 
@@ -84,7 +125,10 @@ void main() {
       await pumpEventQueue();
 
       expect(seen, [
-        const CalendarConfig(calendarId: 'in-memory-calendar'),
+        const CalendarConfig(
+          calendarId: 'in-memory-calendar',
+          serviceAccountKey: _testKey,
+        ),
         null,
       ]);
     });

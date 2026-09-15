@@ -12,6 +12,8 @@ import 'package:schedule_repository/schedule_repository.dart';
 
 import 'helpers/app_harness.dart';
 
+const _testKey = ServiceAccountKey('{"placeholder":"not-a-real-key"}');
+
 /// Builds a [FakeCalendarConfigRepository] and registers its own tear-down.
 FakeCalendarConfigRepository buildRepository({CalendarConfig? initialConfig}) {
   final repository = FakeCalendarConfigRepository(initialConfig: initialConfig);
@@ -64,7 +66,10 @@ void main() {
 
   testWidgets('shows SchedulePage when configured', (tester) async {
     final configRepository = buildRepository(
-      initialConfig: const CalendarConfig(calendarId: 'cal-1'),
+      initialConfig: const CalendarConfig(
+        calendarId: 'cal-1',
+        serviceAccountKey: _testKey,
+      ),
     );
 
     await _pumpApp(tester, configRepository);
@@ -81,7 +86,10 @@ void main() {
     tester,
   ) async {
     final configRepository = buildRepository(
-      initialConfig: const CalendarConfig(calendarId: 'cal-1'),
+      initialConfig: const CalendarConfig(
+        calendarId: 'cal-1',
+        serviceAccountKey: _testKey,
+      ),
     );
 
     await _pumpApp(tester, configRepository);
@@ -100,7 +108,10 @@ void main() {
 
   testWidgets('tapping the settings button opens SettingsPage', (tester) async {
     final configRepository = buildRepository(
-      initialConfig: const CalendarConfig(calendarId: 'cal-1'),
+      initialConfig: const CalendarConfig(
+        calendarId: 'cal-1',
+        serviceAccountKey: _testKey,
+      ),
     );
 
     await _pumpApp(tester, configRepository);

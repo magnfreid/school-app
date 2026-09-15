@@ -3,6 +3,8 @@ import 'package:calendar_config_repository/calendar_config_repository.dart';
 import 'package:school_app/app/cubit/calendar_config_cubit.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+const _testKey = ServiceAccountKey('{"placeholder":"not-a-real-key"}');
+
 void main() {
   group('CalendarConfigCubit', () {
     late FakeCalendarConfigRepository repository;
@@ -31,19 +33,23 @@ void main() {
 
     blocTest<CalendarConfigCubit, CalendarConfigState>(
       'emits configured when the repository reports a config',
-      setUp: () => repository.emit(const CalendarConfig(calendarId: 'cal-1')),
+      setUp: () => repository.emit(
+        const CalendarConfig(calendarId: 'cal-1', serviceAccountKey: _testKey),
+      ),
       build: () => CalendarConfigCubit(configRepository: repository),
       wait: Duration.zero,
       expect: () => [
         const CalendarConfigState.configured(
-          CalendarConfig(calendarId: 'cal-1'),
+          CalendarConfig(calendarId: 'cal-1', serviceAccountKey: _testKey),
         ),
       ],
     );
 
     blocTest<CalendarConfigCubit, CalendarConfigState>(
       'follows an out-of-band clear',
-      setUp: () => repository.emit(const CalendarConfig(calendarId: 'cal-1')),
+      setUp: () => repository.emit(
+        const CalendarConfig(calendarId: 'cal-1', serviceAccountKey: _testKey),
+      ),
       build: () => CalendarConfigCubit(configRepository: repository),
       act: (_) async {
         // Let the seeded value land before changing it.
@@ -53,7 +59,7 @@ void main() {
       wait: Duration.zero,
       expect: () => [
         const CalendarConfigState.configured(
-          CalendarConfig(calendarId: 'cal-1'),
+          CalendarConfig(calendarId: 'cal-1', serviceAccountKey: _testKey),
         ),
         const CalendarConfigState.unconfigured(),
       ],

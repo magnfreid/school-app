@@ -3,6 +3,7 @@ import 'dart:async';
 import 'calendar_config_exception.dart';
 import 'calendar_config_repository.dart';
 import 'models/calendar_config.dart';
+import 'models/service_account_key.dart';
 
 /// [CalendarConfigRepository] backed by nothing but a stream held in memory.
 ///
@@ -19,6 +20,7 @@ class InMemoryCalendarConfigRepository implements CalendarConfigRepository {
   final _controller = StreamController<CalendarConfig?>.broadcast();
   CalendarConfig? _current = const CalendarConfig(
     calendarId: 'in-memory-calendar',
+    serviceAccountKey: ServiceAccountKey('{"placeholder":"not-a-real-key"}'),
   );
 
   @override
