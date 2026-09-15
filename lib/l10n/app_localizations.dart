@@ -247,6 +247,12 @@ abstract class AppLocalizations {
   /// **'Alternate view'**
   String get scheduleAlternateViewTooltip;
 
+  /// Label on the button that returns the schedule to the current week.
+  ///
+  /// In en, this message translates to:
+  /// **'To today'**
+  String get scheduleReturnToTodayLabel;
+
   /// Title shown on the setup page.
   ///
   /// In en, this message translates to:

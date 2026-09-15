@@ -104,6 +104,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scheduleAlternateViewTooltip => 'Alternate view';
 
   @override
+  String get scheduleReturnToTodayLabel => 'To today';
+
+  @override
   String get setupTitle => 'Calendar setup';
 
   @override

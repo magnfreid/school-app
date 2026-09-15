@@ -130,4 +130,34 @@ void main() {
 
     await tester.pumpWidget(const SizedBox.shrink());
   });
+
+  testWidgets('the FAB returns the display to the anchor week', (tester) async {
+    await _pumpSchedulePage(
+      tester,
+      FakeScheduleRepository(today: _anchorToday()),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('scheduleReturnToTodayFab')), findsNothing);
+
+    final scheduleContext = tester.element(find.byType(ScheduleView));
+    final l10n = scheduleContext.l10n;
+    final bloc = scheduleContext.read<ScheduleBloc>();
+    final anchorWeekNumber = (bloc.state as ScheduleLoaded).week.weekNumber;
+
+    await tester.tap(find.byTooltip(l10n.scheduleNavNextWeekTooltip));
+    await tester.pumpAndSettle();
+
+    expect((bloc.state as ScheduleLoaded).weekOffset, 1);
+    expect(find.byKey(const Key('scheduleReturnToTodayFab')), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('scheduleReturnToTodayFab')));
+    await tester.pumpAndSettle();
+
+    expect((bloc.state as ScheduleLoaded).weekOffset, 0);
+    expect(find.text(l10n.scheduleWeekLabel(anchorWeekNumber)), findsOneWidget);
+    expect(find.byKey(const Key('scheduleReturnToTodayFab')), findsNothing);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
 }

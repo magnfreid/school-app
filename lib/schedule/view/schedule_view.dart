@@ -7,6 +7,7 @@ import 'package:school_app/schedule/bloc/schedule_event.dart';
 import 'package:school_app/schedule/bloc/schedule_state.dart';
 import 'package:school_app/schedule/extensions/schedule_text_extension.dart';
 import 'package:school_app/schedule/widgets/next_event_hero.dart';
+import 'package:school_app/schedule/widgets/return_to_today_fab.dart';
 import 'package:school_app/schedule/widgets/schedule_app_bar.dart';
 import 'package:school_app/schedule/widgets/special_event_lane.dart';
 import 'package:school_app/schedule/widgets/week_page_view.dart';
@@ -68,6 +69,14 @@ class ScheduleView extends StatelessWidget {
 
         return Scaffold(
           backgroundColor: context.colors.surface,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: state.weekOffset == 0
+              ? null
+              : ReturnToTodayFab(
+                  onPressed: () =>
+                      bloc.add(const ScheduleBlocEvent.weekChanged(0)),
+                ),
           body: MediaQuery.withNoTextScaling(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
