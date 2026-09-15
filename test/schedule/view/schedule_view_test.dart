@@ -144,7 +144,7 @@ void main() {
       expect(find.text(en.scheduleSyncing), findsOneWidget);
       expect(find.text(en.scheduleLoading), findsOneWidget);
       expect(find.byType(DayColumn), findsNothing);
-      expect(_syncDotColor(tester), AppColors.dark.onSurfaceVariant);
+      expect(_syncDotColor(tester), ScheduleColors.dark.syncWarning);
     });
 
     testWidgets('failure renders all four bands with an unhealthy dot', (
@@ -167,6 +167,7 @@ void main() {
           weekOffset: 0,
           week: week,
           lastSyncedAt: DateTime(2024, 1, 11, 8),
+          syncHealth: ScheduleSyncHealth.healthy,
           days: _days(week),
         ),
       );
@@ -185,6 +186,7 @@ void main() {
           weekOffset: 0,
           week: week,
           lastSyncedAt: DateTime(2024, 1, 11, 8),
+          syncHealth: ScheduleSyncHealth.healthy,
           days: _days(week),
           nextEvent: NextEvent(
             event: event,
@@ -208,6 +210,7 @@ void main() {
           weekOffset: 0,
           week: week,
           lastSyncedAt: DateTime(2024, 1, 11, 8),
+          syncHealth: ScheduleSyncHealth.healthy,
           days: _days(week),
           nextEvent: NextEvent(
             event: event,
@@ -232,6 +235,7 @@ void main() {
             weekOffset: 0,
             week: week,
             lastSyncedAt: DateTime(2024, 1, 11, 8),
+            syncHealth: ScheduleSyncHealth.healthy,
             days: _days(week),
           ),
         );
@@ -251,6 +255,7 @@ void main() {
           weekOffset: 0,
           week: week,
           lastSyncedAt: DateTime(2024, 1, 11, 8),
+          syncHealth: ScheduleSyncHealth.healthy,
           days: _days(week, count: 6),
         ),
       );
@@ -276,6 +281,7 @@ void main() {
           weekOffset: 0,
           week: week,
           lastSyncedAt: DateTime(2024, 1, 11, 8),
+          syncHealth: ScheduleSyncHealth.healthy,
           days: _days(week),
           weekSpecial: weekSpecial,
         ),
@@ -294,6 +300,65 @@ void main() {
 
       expect(find.text(sv.scheduleSyncFailed), findsOneWidget);
       expect(find.text(sv.scheduleUnavailable), findsOneWidget);
+    });
+
+    testWidgets('loaded + healthy renders the sync dot with syncOk', (
+      tester,
+    ) async {
+      final week = _week();
+      await _pumpScheduleView(
+        tester,
+        ScheduleState.loaded(
+          weekOffset: 0,
+          week: week,
+          lastSyncedAt: DateTime(2024, 1, 11, 8),
+          syncHealth: ScheduleSyncHealth.healthy,
+          days: _days(week),
+        ),
+      );
+
+      final decoration =
+          tester
+                  .widget<Container>(find.byKey(const Key('scheduleSyncDot')))
+                  .decoration
+              as BoxDecoration?;
+      expect(decoration?.color, ScheduleColors.dark.syncOk);
+    });
+
+    testWidgets('loaded + warning renders the sync dot with syncWarning', (
+      tester,
+    ) async {
+      final week = _week();
+      await _pumpScheduleView(
+        tester,
+        ScheduleState.loaded(
+          weekOffset: 0,
+          week: week,
+          lastSyncedAt: DateTime(2024, 1, 11, 8),
+          syncHealth: ScheduleSyncHealth.warning,
+          days: _days(week),
+        ),
+      );
+
+      final decoration =
+          tester
+                  .widget<Container>(find.byKey(const Key('scheduleSyncDot')))
+                  .decoration
+              as BoxDecoration?;
+      expect(decoration?.color, ScheduleColors.dark.syncWarning);
+    });
+
+    testWidgets('failure renders the sync dot with syncWarning', (
+      tester,
+    ) async {
+      await _pumpScheduleView(tester, const ScheduleState.failure());
+
+      final decoration =
+          tester
+                  .widget<Container>(find.byKey(const Key('scheduleSyncDot')))
+                  .decoration
+              as BoxDecoration?;
+      expect(decoration?.color, ScheduleColors.dark.syncWarning);
     });
   });
 }

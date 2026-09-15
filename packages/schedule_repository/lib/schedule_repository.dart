@@ -8,6 +8,7 @@ library;
 
 export 'src/models/event_severity.dart';
 export 'src/models/schedule_event.dart';
+export 'src/models/schedule_window.dart';
 export 'src/models/special_event.dart';
 export 'src/models/week_schedule.dart';
 export 'src/fake_schedule_repository.dart';

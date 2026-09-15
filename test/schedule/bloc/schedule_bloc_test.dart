@@ -102,9 +102,10 @@ void main() {
       );
 
       expect(states, [isA<ScheduleLoaded>()]);
-      // The anchor is the Monday of the ISO week containing "now" (Jan 8),
-      // not "now" itself (Jan 11) — offset 1 lands on Jan 15, not Jan 18.
-      expect(repository.fetchCalls.last, DateTime(2024, 1, 15));
+      // The anchor the bloc asks for stops shifting with the week offset —
+      // it stays the Monday of the ISO week containing "now" (Jan 8)
+      // regardless of the offset navigated to.
+      expect(repository.fetchCalls.last, DateTime(2024, 1, 8));
     });
 
     test('droppable() drops a second in-flight refresh', () async {
@@ -201,7 +202,9 @@ void main() {
               as ScheduleLoaded;
 
       expect(clamped.weekOffset, 2);
-      expect(repository.fetchCalls.last, DateTime(2024, 1, 22));
+      // The anchor itself never shifts with the offset — only the index
+      // into the fetched window does.
+      expect(repository.fetchCalls.last, DateTime(2024, 1, 8));
     });
 
     test('weekChanged clamps to the window radius (low)', () async {
@@ -428,6 +431,178 @@ void main() {
       expect(repository.fetchCalls.length, 1);
     });
 
+    test('weekChanged(2) reads the offset week from the fetched window '
+        'without shifting the anchor', () async {
+      final repository = FakeScheduleRepository(today: fixedToday);
+      final bloc = ScheduleBloc(
+        scheduleRepository: repository,
+        now: () => DateTime(2024, 1, 11, 8),
+      );
+      addTearDown(bloc.close);
+
+      bloc.add(const ScheduleBlocEvent.started());
+      await bloc.stream.firstWhere((s) => s is ScheduleLoaded);
+
+      bloc.add(const ScheduleBlocEvent.weekChanged(2));
+      final loaded =
+          await bloc.stream.firstWhere(
+                (s) => s is ScheduleLoaded && s.weekOffset == 2,
+              )
+              as ScheduleLoaded;
+
+      expect(loaded.week.weekStart, DateTime(2024, 1, 22));
+      expect(repository.fetchCalls.last, DateTime(2024, 1, 8));
+    });
+
+    test('the refresh timer periodically requests a forced sync, starting '
+        "unforced from started()'s own load", () async {
+      final repository = FakeScheduleRepository(today: fixedToday);
+      final bloc = ScheduleBloc(
+        scheduleRepository: repository,
+        now: () => DateTime(2024, 1, 11, 8),
+        refreshInterval: const Duration(milliseconds: 20),
+      );
+      addTearDown(bloc.close);
+
+      bloc.add(const ScheduleBlocEvent.started());
+      await bloc.stream.firstWhere((s) => s is ScheduleLoaded);
+
+      await Future<void>.delayed(const Duration(milliseconds: 60));
+
+      expect(repository.forceSyncCalls.first, isFalse);
+      expect(repository.forceSyncCalls, contains(true));
+    });
+
+    test('a stale refresh does not clobber a week the user navigated to '
+        'while its fetch was in flight', () async {
+      final repository = _SlowFirstForceSyncScheduleRepository(
+        today: fixedToday,
+        delay: const Duration(milliseconds: 50),
+      );
+      final bloc = ScheduleBloc(
+        scheduleRepository: repository,
+        now: () => DateTime(2024, 1, 11, 8),
+      );
+      addTearDown(bloc.close);
+
+      bloc.add(const ScheduleBlocEvent.started());
+      await bloc.stream.firstWhere((s) => s is ScheduleLoaded);
+
+      // Simulates the 15-minute timer firing at offset 0; its fetch is held
+      // open by the fake for 50ms.
+      bloc.add(const ScheduleBlocEvent.refreshRequested());
+      // The user navigates to a different week while that fetch is still in
+      // flight — this weekChanged fetch is not delayed, so it lands first.
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+      bloc.add(const ScheduleBlocEvent.weekChanged(1));
+      await bloc.stream.firstWhere(
+        (s) => s is ScheduleLoaded && s.weekOffset == 1,
+      );
+
+      // Give the stale refresh time to resolve and (incorrectly, without
+      // the fix) emit weekOffset: 0 on top of it.
+      await Future<void>.delayed(const Duration(milliseconds: 80));
+
+      expect(
+        bloc.state,
+        isA<ScheduleLoaded>().having((s) => s.weekOffset, 'weekOffset', 1),
+      );
+    });
+
+    test('after close(), no further fetchWindow call arrives from the '
+        'refresh timer', () async {
+      final repository = FakeScheduleRepository(today: fixedToday);
+      final bloc = ScheduleBloc(
+        scheduleRepository: repository,
+        now: () => DateTime(2024, 1, 11, 8),
+        refreshInterval: const Duration(milliseconds: 10),
+      );
+
+      bloc.add(const ScheduleBlocEvent.started());
+      await bloc.stream.firstWhere((s) => s is ScheduleLoaded);
+
+      await bloc.close();
+      final callsAtClose = repository.fetchCalls.length;
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+
+      expect(repository.fetchCalls.length, callsAtClose);
+    });
+
+    test("lastSyncedAt in loaded is the repository's value, not the bloc's "
+        'clock', () async {
+      final fixedSync = DateTime(2024, 1, 1);
+      final repository = FakeScheduleRepository(today: fixedToday)
+        ..lastSyncedAt = fixedSync;
+      final bloc = ScheduleBloc(
+        scheduleRepository: repository,
+        now: () => DateTime(2024, 1, 11, 8),
+      );
+      addTearDown(bloc.close);
+
+      bloc.add(const ScheduleBlocEvent.started());
+      final loaded =
+          await bloc.stream.firstWhere((s) => s is ScheduleLoaded)
+              as ScheduleLoaded;
+
+      expect(loaded.lastSyncedAt, fixedSync);
+    });
+
+    test(
+      'syncHealth crosses to warning strictly after '
+      'syncWarningThreshold, staying healthy exactly at the threshold',
+      () async {
+        final now = DateTime(2024, 1, 11, 8);
+        const threshold = Duration(minutes: 30);
+
+        Future<ScheduleSyncHealth> healthFor(DateTime lastSyncedAt) async {
+          final repository = FakeScheduleRepository(today: fixedToday)
+            ..lastSyncedAt = lastSyncedAt;
+          final bloc = ScheduleBloc(
+            scheduleRepository: repository,
+            now: () => now,
+            syncWarningThreshold: threshold,
+          );
+          addTearDown(bloc.close);
+
+          bloc.add(const ScheduleBlocEvent.started());
+          final loaded =
+              await bloc.stream.firstWhere((s) => s is ScheduleLoaded)
+                  as ScheduleLoaded;
+          return loaded.syncHealth;
+        }
+
+        expect(
+          await healthFor(now.subtract(threshold + const Duration(seconds: 1))),
+          ScheduleSyncHealth.warning,
+        );
+        expect(
+          await healthFor(now.subtract(threshold)),
+          ScheduleSyncHealth.healthy,
+        );
+        expect(
+          await healthFor(now.subtract(threshold - const Duration(seconds: 1))),
+          ScheduleSyncHealth.healthy,
+        );
+      },
+    );
+
+    test('a stale window still emits ScheduleLoaded, never failure', () async {
+      final repository = FakeScheduleRepository(today: fixedToday)
+        ..lastSyncedAt = DateTime(2020);
+      final bloc = ScheduleBloc(
+        scheduleRepository: repository,
+        now: () => DateTime(2024, 1, 11, 8),
+      );
+      addTearDown(bloc.close);
+
+      bloc.add(const ScheduleBlocEvent.started());
+      final loaded =
+          await bloc.stream.firstWhere((s) => s is ScheduleLoaded)
+              as ScheduleLoaded;
+
+      expect(loaded.syncHealth, ScheduleSyncHealth.warning);
+    });
+
     blocTest<ScheduleBloc, ScheduleState>(
       'a week whose events are all in the past has no next event',
       build: () => ScheduleBloc(
@@ -555,7 +730,38 @@ void main() {
 /// `ScheduleException?` and cannot script this.
 class _ThrowingScheduleRepository extends FakeScheduleRepository {
   @override
-  Future<List<WeekSchedule>> fetchWindow({required DateTime anchor}) async {
+  Future<ScheduleWindow> fetchWindow({
+    required DateTime anchor,
+    bool forceSync = false,
+  }) async {
     throw StateError('boom');
+  }
+}
+
+/// Delays only the first `forceSync: true` call — simulating the
+/// 15-minute refresh's fetch staying in flight — while every other call
+/// (including a concurrent `weekChanged`) resolves immediately.
+/// [FakeScheduleRepository.fetchDelay] can't express this: it holds every
+/// call open by the same amount, which can never let a later call finish
+/// first.
+class _SlowFirstForceSyncScheduleRepository extends FakeScheduleRepository {
+  _SlowFirstForceSyncScheduleRepository({
+    required this.delay,
+    required DateTime super.today,
+  });
+
+  final Duration delay;
+  bool _delayed = false;
+
+  @override
+  Future<ScheduleWindow> fetchWindow({
+    required DateTime anchor,
+    bool forceSync = false,
+  }) async {
+    if (forceSync && !_delayed) {
+      _delayed = true;
+      await Future<void>.delayed(delay);
+    }
+    return super.fetchWindow(anchor: anchor, forceSync: forceSync);
   }
 }

@@ -17,7 +17,7 @@ void main() {
     test(
       'window has exactly windowLength consecutive Mondays, ascending',
       () async {
-        final window = await repository.fetchWindow(anchor: fixedToday);
+        final window = (await repository.fetchWindow(anchor: fixedToday)).weeks;
 
         expect(window, hasLength(windowLength));
         for (var i = 0; i < window.length; i++) {
@@ -36,7 +36,7 @@ void main() {
 
     test("the anchor's week sits at windowRadiusInWeeks with the right "
         'weekStart', () async {
-      final window = await repository.fetchWindow(anchor: fixedToday);
+      final window = (await repository.fetchWindow(anchor: fixedToday)).weeks;
 
       expect(
         window[ScheduleRepository.windowRadiusInWeeks].weekStart,
@@ -46,7 +46,7 @@ void main() {
 
     test('the seeded content appears in exactly one entry; the rest are empty '
         'but have correct weekStart/weekNumber', () async {
-      final window = await repository.fetchWindow(anchor: fixedToday);
+      final window = (await repository.fetchWindow(anchor: fixedToday)).weeks;
 
       final seeded = window.where(
         (week) => week.weekStart == repository.week.weekStart,
@@ -64,10 +64,12 @@ void main() {
     test(
       'an anchor late in the day yields the same window as midnight',
       () async {
-        final midnightWindow = await repository.fetchWindow(anchor: fixedToday);
-        final lateWindow = await repository.fetchWindow(
+        final midnightWindow = (await repository.fetchWindow(
+          anchor: fixedToday,
+        )).weeks;
+        final lateWindow = (await repository.fetchWindow(
           anchor: DateTime(2026, 9, 17, 23, 30),
-        );
+        )).weeks;
 
         expect(
           lateWindow.map((w) => w.weekStart),
@@ -75,6 +77,32 @@ void main() {
         );
       },
     );
+
+    test('lastSyncedAt defaults to now() and can be overridden and aged mid'
+        '-run', () async {
+      final fixedInstant = DateTime(2026, 9, 1, 12);
+      final overridden = FakeScheduleRepository(
+        today: fixedToday,
+        now: () => DateTime(2026, 9, 17, 9),
+      );
+      addTearDown(overridden.dispose);
+
+      final defaultWindow = await overridden.fetchWindow(anchor: fixedToday);
+      expect(defaultWindow.lastSyncedAt, DateTime(2026, 9, 17, 9));
+
+      overridden.lastSyncedAt = fixedInstant;
+      final agedWindow = await overridden.fetchWindow(anchor: fixedToday);
+      expect(agedWindow.lastSyncedAt, fixedInstant);
+    });
+
+    test('forceSyncCalls records the forceSync flag of each fetchWindow call, '
+        'parallel to fetchCalls', () async {
+      await repository.fetchWindow(anchor: fixedToday);
+      await repository.fetchWindow(anchor: fixedToday, forceSync: true);
+
+      expect(repository.forceSyncCalls, [false, true]);
+      expect(repository.forceSyncCalls.length, repository.fetchCalls.length);
+    });
 
     test('default constructor seeds the week containing DateTime.now()', () {
       final defaultRepository = FakeScheduleRepository();
@@ -104,7 +132,9 @@ void main() {
       );
       addTearDown(overriddenRepository.dispose);
 
-      final window = await overriddenRepository.fetchWindow(anchor: fixedToday);
+      final window = (await overriddenRepository.fetchWindow(
+        anchor: fixedToday,
+      )).weeks;
       final seeded = window.firstWhere(
         (week) => week.weekStart == customWeekStart,
       );
@@ -169,7 +199,7 @@ void main() {
 
     group('mock content', () {
       test('has ten events', () async {
-        final window = await repository.fetchWindow(anchor: fixedToday);
+        final window = (await repository.fetchWindow(anchor: fixedToday)).weeks;
         final seeded = window.firstWhere(
           (week) => week.weekStart == repository.week.weekStart,
         );

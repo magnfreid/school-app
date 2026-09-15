@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:school_app/app/router/routes.dart';
 import 'package:school_app/l10n/extensions/app_localizations_extension.dart';
+import 'package:school_app/schedule/bloc/schedule_state.dart';
 import 'package:school_app/schedule/widgets/week_nav_arrows.dart';
 
 /// Band 1: week label, nav arrows, sync status, and the two icon buttons.
@@ -16,7 +17,7 @@ class ScheduleAppBar extends StatelessWidget {
     required this.weekLabel,
     required this.weekRange,
     required this.syncLabel,
-    required this.syncHealthy,
+    required this.syncHealth,
     required this.onPreviousWeek,
     required this.onNextWeek,
     super.key,
@@ -31,8 +32,8 @@ class ScheduleAppBar extends StatelessWidget {
   /// Sync-status text.
   final String syncLabel;
 
-  /// Whether the sync dot should render in its healthy colour.
-  final bool syncHealthy;
+  /// Which colour the sync dot should render in.
+  final ScheduleSyncHealth syncHealth;
 
   /// Invoked when the previous-week arrow is tapped.
   final VoidCallback onPreviousWeek;
@@ -82,13 +83,16 @@ class ScheduleAppBar extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
+                      key: const Key('scheduleSyncDot'),
                       width: sizes.syncDotSize,
                       height: sizes.syncDotSize,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: syncHealthy
-                            ? scheduleColors.syncOk
-                            : colors.onSurfaceVariant,
+                        color: switch (syncHealth) {
+                          ScheduleSyncHealth.healthy => scheduleColors.syncOk,
+                          ScheduleSyncHealth.warning =>
+                            scheduleColors.syncWarning,
+                        },
                       ),
                     ),
                     Text(
