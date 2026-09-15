@@ -325,11 +325,47 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settingsTitle;
 
-  /// Placeholder body text shown on the settings page.
+  /// Body text on the settings page explaining what unsubscribing does.
   ///
   /// In en, this message translates to:
-  /// **'Settings — coming soon'**
-  String get settingsPlaceholder;
+  /// **'Unsubscribing removes the calendar ID and the service-account key from this device. Nothing changes in Google Calendar.'**
+  String get settingsUnsubscribeDescription;
+
+  /// Label for the unsubscribe button on the settings page.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsubscribe'**
+  String get settingsUnsubscribeButton;
+
+  /// Title of the unsubscribe confirmation dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsubscribe from this calendar?'**
+  String get settingsUnsubscribeDialogTitle;
+
+  /// Body text of the unsubscribe confirmation dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'The calendar ID and the service-account key will be deleted from this device. You will need to enter them again to see the schedule.'**
+  String get settingsUnsubscribeDialogBody;
+
+  /// Label for the cancel action in the unsubscribe confirmation dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get settingsUnsubscribeDialogCancel;
+
+  /// Label for the confirm action in the unsubscribe confirmation dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsubscribe'**
+  String get settingsUnsubscribeDialogConfirm;
+
+  /// SnackBar message shown when clearing the calendar configuration fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not unsubscribe. Try again.'**
+  String get settingsUnsubscribeFailed;
 
   /// Tooltip for the theme switcher button in the app bar.
   ///

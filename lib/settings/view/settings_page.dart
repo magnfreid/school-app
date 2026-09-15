@@ -1,22 +1,22 @@
-import 'package:app_ui/app_ui.dart';
-import 'package:flutter/material.dart';
-import 'package:school_app/l10n/extensions/app_localizations_extension.dart';
+import 'package:calendar_config_repository/calendar_config_repository.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:school_app/settings/bloc/settings_bloc.dart';
+import 'package:school_app/settings/view/settings_view.dart';
 
-/// Placeholder for the settings feature.
-///
-/// Replaced by the settings chunk.
+/// Provides [SettingsBloc] from the app's [CalendarConfigRepository] and
+/// renders [SettingsView].
 class SettingsPage extends StatelessWidget {
   /// Creates the [SettingsPage].
   const SettingsPage({super.key});
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(context.l10n.settingsTitle)),
-    body: Center(
-      child: Text(
-        context.l10n.settingsPlaceholder,
-        style: context.text.bodyLarge,
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => SettingsBloc(
+        configRepository: context.read<CalendarConfigRepository>(),
       ),
-    ),
-  );
+      child: const SettingsView(),
+    );
+  }
 }

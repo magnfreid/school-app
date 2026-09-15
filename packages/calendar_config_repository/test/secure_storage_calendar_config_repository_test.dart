@@ -14,6 +14,7 @@ class _FakeSecureStore implements SecureStore {
   Object? readError;
   Object? writeError;
   Object? deleteError;
+  final Map<String, Object> deleteErrorsByKey = {};
   final List<String> deletedKeys = [];
 
   @override
@@ -34,6 +35,8 @@ class _FakeSecureStore implements SecureStore {
   @override
   Future<void> delete(String key) async {
     deletedKeys.add(key);
+    final keyError = deleteErrorsByKey[key];
+    if (keyError != null) throw keyError;
     final error = deleteError;
     if (error != null) throw error;
     data.remove(key);
@@ -348,6 +351,67 @@ void main() {
             (e) => e.message,
             'message',
             'Could not clear the calendar configuration.',
+          ),
+        ),
+      );
+    });
+
+    test('clear with the second delete failing still attempts both deletes '
+        'and leaves the config unchanged', () async {
+      final platformException = PlatformException(code: 'Exception');
+      final store = _FakeSecureStore()
+        ..data[SecureStorageCalendarConfigRepository.calendarIdKey] = 'cal-1'
+        ..data[SecureStorageCalendarConfigRepository.serviceAccountKeyKey] =
+            _testKey.json
+        ..deleteErrorsByKey[SecureStorageCalendarConfigRepository
+                .serviceAccountKeyKey] =
+            platformException;
+      final repository = SecureStorageCalendarConfigRepository(store: store);
+      addTearDown(repository.dispose);
+
+      // Hydrate first so a later subscription proves the config, not
+      // just the failed clear(), drives the assertion below.
+      await expectLater(
+        repository.configChanges,
+        emits(
+          const CalendarConfig(
+            calendarId: 'cal-1',
+            serviceAccountKey: _testKey,
+          ),
+        ),
+      );
+
+      await expectLater(
+        () => repository.clear(),
+        throwsA(
+          isA<CalendarConfigException>()
+              .having(
+                (e) => e.message,
+                'message',
+                'Could not clear the calendar configuration.',
+              )
+              .having((e) => e.cause, 'cause', same(platformException)),
+        ),
+      );
+
+      // Both deletes must be attempted even though the first succeeded
+      // and the second failed.
+      expect(
+        store.deletedKeys,
+        containsAll([
+          SecureStorageCalendarConfigRepository.calendarIdKey,
+          SecureStorageCalendarConfigRepository.serviceAccountKeyKey,
+        ]),
+      );
+
+      // _current must not flip to cleared until both deletes succeed: a
+      // later subscriber still sees the pre-clear config, not null.
+      await expectLater(
+        repository.configChanges,
+        emits(
+          const CalendarConfig(
+            calendarId: 'cal-1',
+            serviceAccountKey: _testKey,
           ),
         ),
       );

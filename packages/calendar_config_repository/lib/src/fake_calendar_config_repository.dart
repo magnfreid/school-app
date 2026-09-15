@@ -18,10 +18,13 @@ class FakeCalendarConfigRepository implements CalendarConfigRepository {
   /// unconfigured. When [saveError] is set, [save] throws it instead of
   /// succeeding. [saveDelay] holds each [save] call open, which is what lets
   /// a test observe behaviour that only exists while a request is in flight.
+  /// [clearError] and [clearDelay] do the same for [clear].
   FakeCalendarConfigRepository({
     CalendarConfig? initialConfig,
     this.saveError,
     this.saveDelay = Duration.zero,
+    this.clearError,
+    this.clearDelay = Duration.zero,
   }) : _current = initialConfig;
 
   /// How long each [save] call takes before resolving.
@@ -29,6 +32,12 @@ class FakeCalendarConfigRepository implements CalendarConfigRepository {
 
   /// Error [save] throws when set. Mutable so a test can change it mid-run.
   CalendarConfigException? saveError;
+
+  /// How long each [clear] call takes before resolving.
+  final Duration clearDelay;
+
+  /// Error [clear] throws when set. Mutable so a test can change it mid-run.
+  CalendarConfigException? clearError;
 
   /// Configurations passed to each [save] call, in order.
   final List<CalendarConfig> saveCalls = [];
@@ -73,6 +82,9 @@ class FakeCalendarConfigRepository implements CalendarConfigRepository {
   @override
   Future<void> clear() async {
     clearCount++;
+    if (clearDelay > Duration.zero) await Future<void>.delayed(clearDelay);
+    final error = clearError;
+    if (error != null) throw error;
     emit(null);
   }
 

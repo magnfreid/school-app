@@ -193,9 +193,33 @@
   "@settingsTitle": {
     "description": "Title shown on the settings page."
   },
-  "settingsPlaceholder": "Settings — coming soon",
-  "@settingsPlaceholder": {
-    "description": "Placeholder body text shown on the settings page."
+  "settingsUnsubscribeDescription": "Unsubscribing removes the calendar ID and the service-account key from this device. Nothing changes in Google Calendar.",
+  "@settingsUnsubscribeDescription": {
+    "description": "Body text on the settings page explaining what unsubscribing does."
+  },
+  "settingsUnsubscribeButton": "Unsubscribe",
+  "@settingsUnsubscribeButton": {
+    "description": "Label for the unsubscribe button on the settings page."
+  },
+  "settingsUnsubscribeDialogTitle": "Unsubscribe from this calendar?",
+  "@settingsUnsubscribeDialogTitle": {
+    "description": "Title of the unsubscribe confirmation dialog."
+  },
+  "settingsUnsubscribeDialogBody": "The calendar ID and the service-account key will be deleted from this device. You will need to enter them again to see the schedule.",
+  "@settingsUnsubscribeDialogBody": {
+    "description": "Body text of the unsubscribe confirmation dialog."
+  },
+  "settingsUnsubscribeDialogCancel": "Cancel",
+  "@settingsUnsubscribeDialogCancel": {
+    "description": "Label for the cancel action in the unsubscribe confirmation dialog."
+  },
+  "settingsUnsubscribeDialogConfirm": "Unsubscribe",
+  "@settingsUnsubscribeDialogConfirm": {
+    "description": "Label for the confirm action in the unsubscribe confirmation dialog."
+  },
+  "settingsUnsubscribeFailed": "Could not unsubscribe. Try again.",
+  "@settingsUnsubscribeFailed": {
+    "description": "SnackBar message shown when clearing the calendar configuration fails."
   },
   "themeSwitcherTooltip": "Switch theme",
   "@themeSwitcherTooltip": {

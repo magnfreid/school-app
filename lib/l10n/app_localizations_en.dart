@@ -146,7 +146,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTitle => 'Settings';
 
   @override
-  String get settingsPlaceholder => 'Settings — coming soon';
+  String get settingsUnsubscribeDescription =>
+      'Unsubscribing removes the calendar ID and the service-account key from this device. Nothing changes in Google Calendar.';
+
+  @override
+  String get settingsUnsubscribeButton => 'Unsubscribe';
+
+  @override
+  String get settingsUnsubscribeDialogTitle =>
+      'Unsubscribe from this calendar?';
+
+  @override
+  String get settingsUnsubscribeDialogBody =>
+      'The calendar ID and the service-account key will be deleted from this device. You will need to enter them again to see the schedule.';
+
+  @override
+  String get settingsUnsubscribeDialogCancel => 'Cancel';
+
+  @override
+  String get settingsUnsubscribeDialogConfirm => 'Unsubscribe';
+
+  @override
+  String get settingsUnsubscribeFailed => 'Could not unsubscribe. Try again.';
 
   @override
   String get themeSwitcherTooltip => 'Switch theme';

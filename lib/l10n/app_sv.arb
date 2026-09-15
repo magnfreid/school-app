@@ -37,7 +37,13 @@
   "setupSaveFailed": "Kunde inte spara. Försök igen.",
   "setupSaveSucceeded": "Kalendern är sparad",
   "settingsTitle": "Inställningar",
-  "settingsPlaceholder": "Inställningar — kommer snart",
+  "settingsUnsubscribeDescription": "Om du avslutar prenumerationen tas kalender-ID och tjänstekontots nyckel bort från den här enheten. Ingenting ändras i Google Kalender.",
+  "settingsUnsubscribeButton": "Avsluta prenumeration",
+  "settingsUnsubscribeDialogTitle": "Avsluta prenumerationen?",
+  "settingsUnsubscribeDialogBody": "Kalender-ID och tjänstekontots nyckel raderas från den här enheten. Du behöver ange dem igen för att se schemat.",
+  "settingsUnsubscribeDialogCancel": "Avbryt",
+  "settingsUnsubscribeDialogConfirm": "Avsluta",
+  "settingsUnsubscribeFailed": "Kunde inte avsluta prenumerationen. Försök igen.",
   "themeSwitcherTooltip": "Byt tema",
   "splashLabel": "Startskärm"
 }

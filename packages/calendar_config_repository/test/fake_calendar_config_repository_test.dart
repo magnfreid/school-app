@@ -143,6 +143,41 @@ void main() {
       await expectLater(repository.configChanges, emits(isNull));
     });
 
+    test(
+      'clearError makes clear throw and leaves the config in place',
+      () async {
+        final seeded = FakeCalendarConfigRepository(
+          initialConfig: const CalendarConfig(
+            calendarId: 'a',
+            serviceAccountKey: _testKey,
+          ),
+          clearError: const CalendarConfigException('nope'),
+        );
+        addTearDown(seeded.dispose);
+
+        await expectLater(
+          seeded.clear(),
+          throwsA(isA<CalendarConfigException>()),
+        );
+
+        expect(seeded.clearCount, 1);
+        expect(
+          await seeded.configChanges.first,
+          const CalendarConfig(calendarId: 'a', serviceAccountKey: _testKey),
+        );
+      },
+    );
+
+    test('a delayed clear resolving after dispose is safe', () async {
+      final delayedRepository = FakeCalendarConfigRepository(
+        clearDelay: const Duration(milliseconds: 30),
+      );
+      final clear = delayedRepository.clear();
+      await delayedRepository.dispose();
+
+      await expectLater(clear, completes);
+    });
+
     test('emit pushes out-of-band changes', () {
       expect(
         repository.configChanges,
