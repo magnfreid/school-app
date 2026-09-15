@@ -11,6 +11,8 @@ import 'package:schedule_repository/schedule_repository.dart';
 
 import '../../helpers/app_harness.dart';
 
+const _testKey = ServiceAccountKey('{"placeholder":"not-a-real-key"}');
+
 /// Builds a [FakeCalendarConfigRepository] and registers its own tear-down.
 FakeCalendarConfigRepository buildRepository({CalendarConfig? initialConfig}) {
   final repository = FakeCalendarConfigRepository(initialConfig: initialConfig);
@@ -89,7 +91,10 @@ void main() {
 
     testWidgets('sends a configured user to the schedule', (tester) async {
       final configured = buildRepository(
-        initialConfig: const CalendarConfig(calendarId: 'cal-1'),
+        initialConfig: const CalendarConfig(
+          calendarId: 'cal-1',
+          serviceAccountKey: _testKey,
+        ),
       );
       final router = await _pumpRouter(tester, configured);
       await tester.pumpAndSettle();
@@ -99,7 +104,10 @@ void main() {
 
     testWidgets('bounces a configured user off setup', (tester) async {
       final configured = buildRepository(
-        initialConfig: const CalendarConfig(calendarId: 'cal-1'),
+        initialConfig: const CalendarConfig(
+          calendarId: 'cal-1',
+          serviceAccountKey: _testKey,
+        ),
       );
       final router = await _pumpRouter(tester, configured);
       await tester.pumpAndSettle();
@@ -112,7 +120,10 @@ void main() {
 
     testWidgets('returns to setup when the config is cleared', (tester) async {
       final configured = buildRepository(
-        initialConfig: const CalendarConfig(calendarId: 'cal-1'),
+        initialConfig: const CalendarConfig(
+          calendarId: 'cal-1',
+          serviceAccountKey: _testKey,
+        ),
       );
       final router = await _pumpRouter(tester, configured);
       await tester.pumpAndSettle();
@@ -138,7 +149,10 @@ void main() {
       );
 
       final configured = buildRepository(
-        initialConfig: const CalendarConfig(calendarId: 'cal-1'),
+        initialConfig: const CalendarConfig(
+          calendarId: 'cal-1',
+          serviceAccountKey: _testKey,
+        ),
       );
       final router = await _pumpRouter(
         tester,

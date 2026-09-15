@@ -104,10 +104,43 @@ class AppLocalizationsSv extends AppLocalizations {
   String get scheduleAlternateViewTooltip => 'Alternativ vy';
 
   @override
-  String get setupTitle => 'Konfiguration';
+  String get setupTitle => 'Kalenderinställning';
 
   @override
-  String get setupPlaceholder => 'Konfiguration — kommer snart';
+  String get setupIntro =>
+      'Klistra in kalender-ID och tjänstekontots nyckel. Båda sparas endast på den här enheten.';
+
+  @override
+  String get setupCalendarIdLabel => 'Kalender-ID';
+
+  @override
+  String get setupCalendarIdHint => 'name@group.calendar.google.com';
+
+  @override
+  String get setupServiceAccountKeyLabel => 'Tjänstekontots nyckel (JSON)';
+
+  @override
+  String get setupServiceAccountKeyHint =>
+      'Klistra in hela innehållet i JSON-nyckelfilen';
+
+  @override
+  String get setupErrorCalendarIdEmpty => 'Ange ett kalender-ID';
+
+  @override
+  String get setupErrorKeyEmpty => 'Klistra in tjänstekontots nyckel';
+
+  @override
+  String get setupErrorKeyMalformed =>
+      'Det här är inte giltig JSON. Klistra in hela nyckelfilen, inklusive klamrarna.';
+
+  @override
+  String get setupSaveButton => 'Spara';
+
+  @override
+  String get setupSaveFailed => 'Kunde inte spara. Försök igen.';
+
+  @override
+  String get setupSaveSucceeded => 'Kalendern är sparad';
 
   @override
   String get settingsTitle => 'Inställningar';

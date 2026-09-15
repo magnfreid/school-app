@@ -104,10 +104,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scheduleAlternateViewTooltip => 'Alternate view';
 
   @override
-  String get setupTitle => 'Setup';
+  String get setupTitle => 'Calendar setup';
 
   @override
-  String get setupPlaceholder => 'Setup — coming soon';
+  String get setupIntro =>
+      'Paste the calendar ID and the service-account key. Both are stored on this device only.';
+
+  @override
+  String get setupCalendarIdLabel => 'Calendar ID';
+
+  @override
+  String get setupCalendarIdHint => 'name@group.calendar.google.com';
+
+  @override
+  String get setupServiceAccountKeyLabel => 'Service account key (JSON)';
+
+  @override
+  String get setupServiceAccountKeyHint =>
+      'Paste the whole contents of the JSON key file';
+
+  @override
+  String get setupErrorCalendarIdEmpty => 'Enter a calendar ID';
+
+  @override
+  String get setupErrorKeyEmpty => 'Paste the service account key';
+
+  @override
+  String get setupErrorKeyMalformed =>
+      'This is not valid JSON. Paste the whole key file, braces included.';
+
+  @override
+  String get setupSaveButton => 'Save';
+
+  @override
+  String get setupSaveFailed => 'Could not save. Try again.';
+
+  @override
+  String get setupSaveSucceeded => 'Calendar saved';
 
   @override
   String get settingsTitle => 'Settings';

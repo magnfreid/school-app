@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CalendarConfig {
 
- String get calendarId;
+ String get calendarId; ServiceAccountKey get serviceAccountKey;
 /// Create a copy of CalendarConfig
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $CalendarConfigCopyWith<CalendarConfig> get copyWith => _$CalendarConfigCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CalendarConfig&&(identical(other.calendarId, calendarId) || other.calendarId == calendarId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CalendarConfig&&(identical(other.calendarId, calendarId) || other.calendarId == calendarId)&&(identical(other.serviceAccountKey, serviceAccountKey) || other.serviceAccountKey == serviceAccountKey));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,calendarId);
+int get hashCode => Object.hash(runtimeType,calendarId,serviceAccountKey);
 
 @override
 String toString() {
-  return 'CalendarConfig(calendarId: $calendarId)';
+  return 'CalendarConfig(calendarId: $calendarId, serviceAccountKey: $serviceAccountKey)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $CalendarConfigCopyWith<$Res>  {
   factory $CalendarConfigCopyWith(CalendarConfig value, $Res Function(CalendarConfig) _then) = _$CalendarConfigCopyWithImpl;
 @useResult
 $Res call({
- String calendarId
+ String calendarId, ServiceAccountKey serviceAccountKey
 });
 
 
@@ -62,10 +62,11 @@ class _$CalendarConfigCopyWithImpl<$Res>
 
 /// Create a copy of CalendarConfig
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? calendarId = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? calendarId = null,Object? serviceAccountKey = null,}) {
   return _then(_self.copyWith(
 calendarId: null == calendarId ? _self.calendarId : calendarId // ignore: cast_nullable_to_non_nullable
-as String,
+as String,serviceAccountKey: null == serviceAccountKey ? _self.serviceAccountKey : serviceAccountKey // ignore: cast_nullable_to_non_nullable
+as ServiceAccountKey,
   ));
 }
 
@@ -150,10 +151,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String calendarId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String calendarId,  ServiceAccountKey serviceAccountKey)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CalendarConfig() when $default != null:
-return $default(_that.calendarId);case _:
+return $default(_that.calendarId,_that.serviceAccountKey);case _:
   return orElse();
 
 }
@@ -171,10 +172,10 @@ return $default(_that.calendarId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String calendarId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String calendarId,  ServiceAccountKey serviceAccountKey)  $default,) {final _that = this;
 switch (_that) {
 case _CalendarConfig():
-return $default(_that.calendarId);case _:
+return $default(_that.calendarId,_that.serviceAccountKey);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -191,10 +192,10 @@ return $default(_that.calendarId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String calendarId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String calendarId,  ServiceAccountKey serviceAccountKey)?  $default,) {final _that = this;
 switch (_that) {
 case _CalendarConfig() when $default != null:
-return $default(_that.calendarId);case _:
+return $default(_that.calendarId,_that.serviceAccountKey);case _:
   return null;
 
 }
@@ -206,10 +207,11 @@ return $default(_that.calendarId);case _:
 
 
 class _CalendarConfig implements CalendarConfig {
-  const _CalendarConfig({required this.calendarId});
+  const _CalendarConfig({required this.calendarId, required this.serviceAccountKey});
   
 
 @override final  String calendarId;
+@override final  ServiceAccountKey serviceAccountKey;
 
 /// Create a copy of CalendarConfig
 /// with the given fields replaced by the non-null parameter values.
@@ -221,16 +223,16 @@ _$CalendarConfigCopyWith<_CalendarConfig> get copyWith => __$CalendarConfigCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CalendarConfig&&(identical(other.calendarId, calendarId) || other.calendarId == calendarId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CalendarConfig&&(identical(other.calendarId, calendarId) || other.calendarId == calendarId)&&(identical(other.serviceAccountKey, serviceAccountKey) || other.serviceAccountKey == serviceAccountKey));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,calendarId);
+int get hashCode => Object.hash(runtimeType,calendarId,serviceAccountKey);
 
 @override
 String toString() {
-  return 'CalendarConfig(calendarId: $calendarId)';
+  return 'CalendarConfig(calendarId: $calendarId, serviceAccountKey: $serviceAccountKey)';
 }
 
 
@@ -241,7 +243,7 @@ abstract mixin class _$CalendarConfigCopyWith<$Res> implements $CalendarConfigCo
   factory _$CalendarConfigCopyWith(_CalendarConfig value, $Res Function(_CalendarConfig) _then) = __$CalendarConfigCopyWithImpl;
 @override @useResult
 $Res call({
- String calendarId
+ String calendarId, ServiceAccountKey serviceAccountKey
 });
 
 
@@ -258,10 +260,11 @@ class __$CalendarConfigCopyWithImpl<$Res>
 
 /// Create a copy of CalendarConfig
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? calendarId = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? calendarId = null,Object? serviceAccountKey = null,}) {
   return _then(_CalendarConfig(
 calendarId: null == calendarId ? _self.calendarId : calendarId // ignore: cast_nullable_to_non_nullable
-as String,
+as String,serviceAccountKey: null == serviceAccountKey ? _self.serviceAccountKey : serviceAccountKey // ignore: cast_nullable_to_non_nullable
+as ServiceAccountKey,
   ));
 }
 

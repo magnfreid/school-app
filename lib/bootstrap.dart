@@ -35,8 +35,9 @@ class _AppBlocObserver extends BlocObserver {
 /// Boots the app.
 ///
 /// The only place a concrete implementation is named. Everything below this
-/// point receives interfaces — swapping [InMemoryCalendarConfigRepository]
-/// for a real backend is a one-line change here and touches no feature code.
+/// point receives interfaces — swapping [SecureStorageCalendarConfigRepository]
+/// for a different backend is a one-line change here and touches no feature
+/// code.
 Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -67,7 +68,7 @@ Future<void> bootstrap() async {
     MultiRepositoryProvider(
       providers: [
         RepositoryProvider<CalendarConfigRepository>(
-          create: (_) => InMemoryCalendarConfigRepository(),
+          create: (_) => SecureStorageCalendarConfigRepository(),
           dispose: (repository) => unawaited(repository.dispose()),
           lazy: false,
         ),

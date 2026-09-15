@@ -250,14 +250,74 @@ abstract class AppLocalizations {
   /// Title shown on the setup page.
   ///
   /// In en, this message translates to:
-  /// **'Setup'**
+  /// **'Calendar setup'**
   String get setupTitle;
 
-  /// Placeholder body text shown on the setup page.
+  /// Introductory body text shown on the setup page.
   ///
   /// In en, this message translates to:
-  /// **'Setup — coming soon'**
-  String get setupPlaceholder;
+  /// **'Paste the calendar ID and the service-account key. Both are stored on this device only.'**
+  String get setupIntro;
+
+  /// Label for the calendar ID field on the setup page.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar ID'**
+  String get setupCalendarIdLabel;
+
+  /// Hint text for the calendar ID field on the setup page.
+  ///
+  /// In en, this message translates to:
+  /// **'name@group.calendar.google.com'**
+  String get setupCalendarIdHint;
+
+  /// Label for the service-account key field on the setup page.
+  ///
+  /// In en, this message translates to:
+  /// **'Service account key (JSON)'**
+  String get setupServiceAccountKeyLabel;
+
+  /// Hint text for the service-account key field on the setup page.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the whole contents of the JSON key file'**
+  String get setupServiceAccountKeyHint;
+
+  /// Field error shown when the calendar ID field is submitted empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a calendar ID'**
+  String get setupErrorCalendarIdEmpty;
+
+  /// Field error shown when the service-account key field is submitted empty.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the service account key'**
+  String get setupErrorKeyEmpty;
+
+  /// Field error shown when the service-account key field is not valid JSON.
+  ///
+  /// In en, this message translates to:
+  /// **'This is not valid JSON. Paste the whole key file, braces included.'**
+  String get setupErrorKeyMalformed;
+
+  /// Label for the save button on the setup page.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get setupSaveButton;
+
+  /// SnackBar message shown when saving the calendar configuration fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save. Try again.'**
+  String get setupSaveFailed;
+
+  /// SnackBar message shown when the calendar configuration is saved successfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar saved'**
+  String get setupSaveSucceeded;
 
   /// Title shown on the settings page.
   ///
