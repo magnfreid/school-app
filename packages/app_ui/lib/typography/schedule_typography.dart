@@ -45,6 +45,7 @@ class ScheduleTypography {
     this.weekLabel = const TextStyle(fontSize: 21, fontWeight: FontWeight.w500),
     this.weekRange = const TextStyle(fontSize: 17, fontWeight: FontWeight.w300),
     this.syncLabel = const TextStyle(fontSize: 15, fontWeight: FontWeight.w300),
+    this.fabLabel = const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
     this.bannerLabelWeek = const TextStyle(
       fontSize: 11,
       fontWeight: FontWeight.w500,
@@ -107,6 +108,9 @@ class ScheduleTypography {
 
   /// App-bar sync-status label. 15 / w300.
   final TextStyle syncLabel;
+
+  /// Return-to-today FAB label. 17 / w500.
+  final TextStyle fabLabel;
 
   /// Week-spanning special-event banner label. 11 / w500 / ls2.2.
   final TextStyle bannerLabelWeek;

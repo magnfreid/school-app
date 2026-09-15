@@ -360,5 +360,65 @@ void main() {
               as BoxDecoration?;
       expect(decoration?.color, ScheduleColors.dark.syncWarning);
     });
+
+    testWidgets('loaded at the anchor week shows no return-to-today FAB', (
+      tester,
+    ) async {
+      final week = _week();
+      await _pumpScheduleView(
+        tester,
+        ScheduleState.loaded(
+          weekOffset: 0,
+          week: week,
+          lastSyncedAt: DateTime(2024, 1, 11, 8),
+          syncHealth: ScheduleSyncHealth.healthy,
+          days: _days(week),
+        ),
+      );
+
+      expect(find.byKey(const Key('scheduleReturnToTodayFab')), findsNothing);
+    });
+
+    testWidgets('loaded away from the anchor week shows the FAB', (
+      tester,
+    ) async {
+      final week = _week();
+      await _pumpScheduleView(
+        tester,
+        ScheduleState.loaded(
+          weekOffset: 2,
+          week: week,
+          lastSyncedAt: DateTime(2024, 1, 11, 8),
+          syncHealth: ScheduleSyncHealth.healthy,
+          days: _days(week),
+        ),
+      );
+
+      expect(find.byKey(const Key('scheduleReturnToTodayFab')), findsOneWidget);
+      expect(find.text(en.scheduleReturnToTodayLabel), findsOneWidget);
+    });
+
+    testWidgets('failure away from the anchor week still shows the FAB', (
+      tester,
+    ) async {
+      await _pumpScheduleView(
+        tester,
+        const ScheduleState.failure(weekOffset: -1),
+      );
+
+      expect(find.byKey(const Key('scheduleReturnToTodayFab')), findsOneWidget);
+    });
+
+    testWidgets('the FAB label renders against the Swedish locale', (
+      tester,
+    ) async {
+      await _pumpScheduleView(
+        tester,
+        const ScheduleState.failure(weekOffset: 1),
+        locale: const Locale('sv'),
+      );
+
+      expect(find.text(sv.scheduleReturnToTodayLabel), findsOneWidget);
+    });
   });
 }

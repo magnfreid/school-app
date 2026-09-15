@@ -141,6 +141,10 @@
   "@scheduleAlternateViewTooltip": {
     "description": "Tooltip for the placeholder alternate-view icon button."
   },
+  "scheduleReturnToTodayLabel": "To today",
+  "@scheduleReturnToTodayLabel": {
+    "description": "Label on the button that returns the schedule to the current week."
+  },
   "setupTitle": "Calendar setup",
   "@setupTitle": {
     "description": "Title shown on the setup page."
