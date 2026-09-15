@@ -2,11 +2,14 @@ import 'dart:async';
 import 'dart:developer' as developer;
 
 import 'package:calendar_config_repository/calendar_config_repository.dart';
+import 'package:display_repository/display_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:school_app/app/app.dart';
+import 'package:school_app/app/bloc/display_bloc.dart';
+import 'package:school_app/app/bloc/display_event.dart';
 import 'package:school_app/app/cubit/calendar_config_cubit.dart';
 import 'package:school_app/app/cubit/theme_cubit.dart';
 import 'package:schedule_repository/schedule_repository.dart';
@@ -79,6 +82,11 @@ Future<void> bootstrap() async {
           dispose: (repository) => unawaited(repository.dispose()),
           lazy: false,
         ),
+        RepositoryProvider<DisplayRepository>(
+          create: (_) => DeviceDisplayRepository(),
+          dispose: (repository) => unawaited(repository.dispose()),
+          lazy: false,
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -89,6 +97,12 @@ Future<void> bootstrap() async {
             lazy: false,
           ),
           BlocProvider(create: (_) => ThemeCubit()),
+          BlocProvider(
+            create: (context) => DisplayBloc(
+              displayRepository: context.read<DisplayRepository>(),
+            )..add(const DisplayEvent.started()),
+            lazy: false,
+          ),
         ],
         child: const App(),
       ),

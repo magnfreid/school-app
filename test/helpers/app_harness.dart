@@ -1,6 +1,8 @@
 import 'package:calendar_config_repository/calendar_config_repository.dart';
+import 'package:display_repository/display_repository.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:school_app/app/bloc/display_bloc.dart';
 import 'package:school_app/app/cubit/calendar_config_cubit.dart';
 import 'package:school_app/app/cubit/theme_cubit.dart';
 import 'package:schedule_repository/schedule_repository.dart';
@@ -9,11 +11,19 @@ import 'package:schedule_repository/schedule_repository.dart';
 ///
 /// Widget tests pump through this so they exercise the same wiring the app
 /// runs with, instead of a hand-built subset that drifts from it.
+///
+/// [displayRepository] defaults to a not-powered [FakeDisplayRepository].
+/// [displayBloc] defaults to a [DisplayBloc] over that repository, built
+/// without `..add(started())` so it stays in `DisplayReleased`, subscribes
+/// to nothing and creates no timers — this is what keeps the existing
+/// callers of this function unchanged.
 Widget wrapWithAppProviders({
   required CalendarConfigRepository configRepository,
   required ScheduleRepository scheduleRepository,
   required CalendarConfigCubit configCubit,
   required Widget child,
+  DisplayRepository? displayRepository,
+  DisplayBloc? displayBloc,
 }) {
   return MultiRepositoryProvider(
     providers: [
@@ -21,11 +31,21 @@ Widget wrapWithAppProviders({
         value: configRepository,
       ),
       RepositoryProvider<ScheduleRepository>.value(value: scheduleRepository),
+      RepositoryProvider<DisplayRepository>.value(
+        value: displayRepository ?? FakeDisplayRepository(),
+      ),
     ],
     child: MultiBlocProvider(
       providers: [
         BlocProvider.value(value: configCubit),
         BlocProvider(create: (_) => ThemeCubit()),
+        displayBloc != null
+            ? BlocProvider.value(value: displayBloc)
+            : BlocProvider(
+                create: (context) => DisplayBloc(
+                  displayRepository: context.read<DisplayRepository>(),
+                ),
+              ),
       ],
       child: child,
     ),
