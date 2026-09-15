@@ -76,7 +76,10 @@ class ScheduleView extends StatelessWidget {
                   weekLabel: weekLabel,
                   weekRange: weekRange,
                   syncLabel: syncLabel,
-                  syncHealthy: state is ScheduleLoaded,
+                  syncHealth: switch (state) {
+                    ScheduleLoaded(:final syncHealth) => syncHealth,
+                    _ => ScheduleSyncHealth.warning,
+                  },
                   onPreviousWeek: () => bloc.add(
                     ScheduleBlocEvent.weekChanged(state.weekOffset - 1),
                   ),

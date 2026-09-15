@@ -15,6 +15,15 @@ enum RelativeDay {
   later,
 }
 
+/// How fresh the last successful sync is, for the app bar's sync dot.
+enum ScheduleSyncHealth {
+  /// The last successful sync is within the warning threshold.
+  healthy,
+
+  /// The last successful sync is older than the warning threshold.
+  warning,
+}
+
 /// The next upcoming event in the displayed week, plus its relative timing.
 @freezed
 abstract class NextEvent with _$NextEvent {
@@ -54,6 +63,7 @@ sealed class ScheduleState with _$ScheduleState {
     required int weekOffset,
     required WeekSchedule week,
     required DateTime lastSyncedAt,
+    required ScheduleSyncHealth syncHealth,
     required List<ScheduleDay> days,
     NextEvent? nextEvent,
     SpecialEventWholeWeek? weekSpecial,

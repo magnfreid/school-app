@@ -1,3 +1,4 @@
+import 'models/schedule_window.dart';
 import 'models/week_schedule.dart';
 import 'schedule_exception.dart';
 
@@ -14,14 +15,25 @@ abstract interface class ScheduleRepository {
 
   /// Returns the window of weeks around [anchor].
   ///
-  /// Returns exactly `2 * windowRadiusInWeeks + 1` weeks, ascending by
+  /// [ScheduleWindow.weeks] keeps the existing guarantees verbatim: exactly
+  /// `2 * windowRadiusInWeeks + 1` entries, ascending by
   /// [WeekSchedule.weekStart], consecutive, with the anchor's own week at
   /// index [windowRadiusInWeeks]. A week with no content is still present,
   /// with empty lists — the caller never has to handle a hole. The anchor's
   /// time-of-day is ignored.
   ///
-  /// Throws a [ScheduleException] when the window cannot be read.
-  Future<List<WeekSchedule>> fetchWindow({required DateTime anchor});
+  /// [forceSync] `false` (the default) may be served entirely from memory.
+  /// `true` asks the implementation to reconcile with the backend first. A
+  /// sync that fails while there is cached data to return does not throw —
+  /// it returns the cached window with [ScheduleWindow.lastSyncedAt]
+  /// unchanged.
+  ///
+  /// Throws a [ScheduleException] only when there is no window to return at
+  /// all.
+  Future<ScheduleWindow> fetchWindow({
+    required DateTime anchor,
+    bool forceSync = false,
+  });
 
   /// Releases resources held by the implementation.
   ///

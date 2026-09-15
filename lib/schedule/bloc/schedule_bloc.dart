@@ -34,13 +34,18 @@ class ScheduleBloc extends Bloc<ScheduleBlocEvent, ScheduleState> {
   /// [now] defaults to [DateTime.now]; inject a fixed clock in tests.
   /// [idleTimeout] is how long the display stays away from the anchor week
   /// before it auto-returns; [anchorCheckInterval] is how often the anchor
-  /// week is recomputed to catch a rollover. Both are constructor parameters
-  /// with production defaults so tests can inject short durations.
+  /// week is recomputed to catch a rollover. [refreshInterval] is how often
+  /// a background delta sync is requested; [syncWarningThreshold] is how
+  /// stale [ScheduleWindow.lastSyncedAt] must be before the sync dot renders
+  /// its warning colour. All are constructor parameters with production
+  /// defaults so tests can inject short durations.
   ScheduleBloc({
     required ScheduleRepository scheduleRepository,
     DateTime Function()? now,
     Duration idleTimeout = const Duration(minutes: 5),
     Duration anchorCheckInterval = const Duration(minutes: 1),
+    Duration refreshInterval = const Duration(minutes: 15),
+    Duration syncWarningThreshold = const Duration(minutes: 30),
   }) : _repository = scheduleRepository,
        _now = now ?? DateTime.now,
        // An initializing formal would make the named parameter private
@@ -48,6 +53,8 @@ class ScheduleBloc extends Bloc<ScheduleBlocEvent, ScheduleState> {
        // constructor argument callers use.
        // ignore: prefer_initializing_formals
        _idleTimeout = idleTimeout,
+       // ignore: prefer_initializing_formals
+       _syncWarningThreshold = syncWarningThreshold,
        super(const ScheduleState.initial()) {
     on<ScheduleStarted>(_onStarted);
     on<ScheduleWeekChanged>(_onWeekChanged, transformer: restartable());
@@ -64,19 +71,29 @@ class ScheduleBloc extends Bloc<ScheduleBlocEvent, ScheduleState> {
         add(const ScheduleBlocEvent.anchorChanged());
       }
     });
+    // The 15-minute refresh deliberately does not restart the idle timer:
+    // it is not user activity, and an auto-return to the anchor week must
+    // still fire.
+    _refreshTimer = Timer.periodic(refreshInterval, (_) {
+      if (isClosed) return;
+      add(const ScheduleBlocEvent.refreshRequested());
+    });
   }
 
   final ScheduleRepository _repository;
   final DateTime Function() _now;
   final Duration _idleTimeout;
+  final Duration _syncWarningThreshold;
   late DateTime _anchor;
   Timer? _idleTimer;
   Timer? _anchorTimer;
+  Timer? _refreshTimer;
 
   @override
   Future<void> close() {
     _idleTimer?.cancel();
     _anchorTimer?.cancel();
+    _refreshTimer?.cancel();
     return super.close();
   }
 
@@ -118,7 +135,12 @@ class ScheduleBloc extends Bloc<ScheduleBlocEvent, ScheduleState> {
     ScheduleRefreshRequested event,
     Emitter<ScheduleState> emit,
   ) async {
-    await _load(state.weekOffset, emit);
+    await _load(
+      state.weekOffset,
+      emit,
+      forceSync: true,
+      dropIfOffsetChanged: true,
+    );
   }
 
   Future<void> _onIdleTimeoutElapsed(
@@ -141,41 +163,57 @@ class ScheduleBloc extends Bloc<ScheduleBlocEvent, ScheduleState> {
     await _load(0, emit);
   }
 
-  Future<void> _load(int offset, Emitter<ScheduleState> emit) async {
+  Future<void> _load(
+    int offset,
+    Emitter<ScheduleState> emit, {
+    bool forceSync = false,
+    bool dropIfOffsetChanged = false,
+  }) async {
     final n = _now();
-    final anchor = DateTime(
-      _anchor.year,
-      _anchor.month,
-      _anchor.day + offset * 7,
-    );
+    ScheduleState result;
     try {
-      final window = await _repository.fetchWindow(anchor: anchor);
+      final window = await _repository.fetchWindow(
+        anchor: _anchor,
+        forceSync: forceSync,
+      );
       // Indexing directly is deliberate: a short list from a
       // contract-violating implementation becomes a RangeError and lands in
       // the catch-all below.
-      final week = window[ScheduleRepository.windowRadiusInWeeks];
+      final week =
+          window.weeks[ScheduleRepository.windowRadiusInWeeks + offset];
       final today = DateTime(n.year, n.month, n.day);
-      emit(
-        ScheduleState.loaded(
-          weekOffset: offset,
-          week: week,
-          lastSyncedAt: _now(),
-          days: _buildDays(week, today),
-          nextEvent: _nextEvent(week, n),
-          weekSpecial: week.specialEvents
-              .whereType<SpecialEventWholeWeek>()
-              .firstOrNull,
-        ),
+      result = ScheduleState.loaded(
+        weekOffset: offset,
+        week: week,
+        lastSyncedAt: window.lastSyncedAt,
+        syncHealth: n.difference(window.lastSyncedAt) > _syncWarningThreshold
+            ? ScheduleSyncHealth.warning
+            : ScheduleSyncHealth.healthy,
+        days: _buildDays(week, today),
+        nextEvent: _nextEvent(week, n),
+        weekSpecial: week.specialEvents
+            .whereType<SpecialEventWholeWeek>()
+            .firstOrNull,
       );
     } on ScheduleException {
-      emit(ScheduleState.failure(weekOffset: offset));
+      result = ScheduleState.failure(weekOffset: offset);
     } catch (_) {
       // A kiosk must not hang: both catch clauses reach the same state, so
       // there is no order-dependent behaviour beyond both paths reaching
       // `failure`. The typed clause must stay first — reversing them is
       // `dead_code_on_catch_subtype`.
-      emit(ScheduleState.failure(weekOffset: offset));
+      result = ScheduleState.failure(weekOffset: offset);
     }
+
+    // `dropIfOffsetChanged` (set by the background refresh only) guards
+    // against the cross-event race: the refresh's fetch started for
+    // `offset`, but a `weekChanged` — a different event type, so
+    // `restartable()` on it gives no protection here — may have landed on a
+    // different offset while that fetch was in flight. Emitting now would
+    // silently snap the display back to the stale offset, so drop the
+    // result instead.
+    if (dropIfOffsetChanged && state.weekOffset != offset) return;
+    emit(result);
   }
 
   List<ScheduleDay> _buildDays(WeekSchedule week, DateTime today) {

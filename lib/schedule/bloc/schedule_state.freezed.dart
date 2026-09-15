@@ -709,12 +709,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int weekOffset)?  initial,TResult Function( int weekOffset)?  loading,TResult Function( int weekOffset,  WeekSchedule week,  DateTime lastSyncedAt,  List<ScheduleDay> days,  NextEvent? nextEvent,  SpecialEventWholeWeek? weekSpecial)?  loaded,TResult Function( int weekOffset)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int weekOffset)?  initial,TResult Function( int weekOffset)?  loading,TResult Function( int weekOffset,  WeekSchedule week,  DateTime lastSyncedAt,  ScheduleSyncHealth syncHealth,  List<ScheduleDay> days,  NextEvent? nextEvent,  SpecialEventWholeWeek? weekSpecial)?  loaded,TResult Function( int weekOffset)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ScheduleInitial() when initial != null:
 return initial(_that.weekOffset);case ScheduleLoading() when loading != null:
 return loading(_that.weekOffset);case ScheduleLoaded() when loaded != null:
-return loaded(_that.weekOffset,_that.week,_that.lastSyncedAt,_that.days,_that.nextEvent,_that.weekSpecial);case ScheduleFailure() when failure != null:
+return loaded(_that.weekOffset,_that.week,_that.lastSyncedAt,_that.syncHealth,_that.days,_that.nextEvent,_that.weekSpecial);case ScheduleFailure() when failure != null:
 return failure(_that.weekOffset);case _:
   return orElse();
 
@@ -733,12 +733,12 @@ return failure(_that.weekOffset);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int weekOffset)  initial,required TResult Function( int weekOffset)  loading,required TResult Function( int weekOffset,  WeekSchedule week,  DateTime lastSyncedAt,  List<ScheduleDay> days,  NextEvent? nextEvent,  SpecialEventWholeWeek? weekSpecial)  loaded,required TResult Function( int weekOffset)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int weekOffset)  initial,required TResult Function( int weekOffset)  loading,required TResult Function( int weekOffset,  WeekSchedule week,  DateTime lastSyncedAt,  ScheduleSyncHealth syncHealth,  List<ScheduleDay> days,  NextEvent? nextEvent,  SpecialEventWholeWeek? weekSpecial)  loaded,required TResult Function( int weekOffset)  failure,}) {final _that = this;
 switch (_that) {
 case ScheduleInitial():
 return initial(_that.weekOffset);case ScheduleLoading():
 return loading(_that.weekOffset);case ScheduleLoaded():
-return loaded(_that.weekOffset,_that.week,_that.lastSyncedAt,_that.days,_that.nextEvent,_that.weekSpecial);case ScheduleFailure():
+return loaded(_that.weekOffset,_that.week,_that.lastSyncedAt,_that.syncHealth,_that.days,_that.nextEvent,_that.weekSpecial);case ScheduleFailure():
 return failure(_that.weekOffset);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -753,12 +753,12 @@ return failure(_that.weekOffset);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int weekOffset)?  initial,TResult? Function( int weekOffset)?  loading,TResult? Function( int weekOffset,  WeekSchedule week,  DateTime lastSyncedAt,  List<ScheduleDay> days,  NextEvent? nextEvent,  SpecialEventWholeWeek? weekSpecial)?  loaded,TResult? Function( int weekOffset)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int weekOffset)?  initial,TResult? Function( int weekOffset)?  loading,TResult? Function( int weekOffset,  WeekSchedule week,  DateTime lastSyncedAt,  ScheduleSyncHealth syncHealth,  List<ScheduleDay> days,  NextEvent? nextEvent,  SpecialEventWholeWeek? weekSpecial)?  loaded,TResult? Function( int weekOffset)?  failure,}) {final _that = this;
 switch (_that) {
 case ScheduleInitial() when initial != null:
 return initial(_that.weekOffset);case ScheduleLoading() when loading != null:
 return loading(_that.weekOffset);case ScheduleLoaded() when loaded != null:
-return loaded(_that.weekOffset,_that.week,_that.lastSyncedAt,_that.days,_that.nextEvent,_that.weekSpecial);case ScheduleFailure() when failure != null:
+return loaded(_that.weekOffset,_that.week,_that.lastSyncedAt,_that.syncHealth,_that.days,_that.nextEvent,_that.weekSpecial);case ScheduleFailure() when failure != null:
 return failure(_that.weekOffset);case _:
   return null;
 
@@ -903,12 +903,13 @@ as int,
 
 
 class ScheduleLoaded implements ScheduleState {
-  const ScheduleLoaded({required this.weekOffset, required this.week, required this.lastSyncedAt, required final  List<ScheduleDay> days, this.nextEvent, this.weekSpecial}): _days = days;
+  const ScheduleLoaded({required this.weekOffset, required this.week, required this.lastSyncedAt, required this.syncHealth, required final  List<ScheduleDay> days, this.nextEvent, this.weekSpecial}): _days = days;
   
 
 @override final  int weekOffset;
  final  WeekSchedule week;
  final  DateTime lastSyncedAt;
+ final  ScheduleSyncHealth syncHealth;
  final  List<ScheduleDay> _days;
  List<ScheduleDay> get days {
   if (_days is EqualUnmodifiableListView) return _days;
@@ -929,16 +930,16 @@ $ScheduleLoadedCopyWith<ScheduleLoaded> get copyWith => _$ScheduleLoadedCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScheduleLoaded&&(identical(other.weekOffset, weekOffset) || other.weekOffset == weekOffset)&&(identical(other.week, week) || other.week == week)&&(identical(other.lastSyncedAt, lastSyncedAt) || other.lastSyncedAt == lastSyncedAt)&&const DeepCollectionEquality().equals(other._days, _days)&&(identical(other.nextEvent, nextEvent) || other.nextEvent == nextEvent)&&(identical(other.weekSpecial, weekSpecial) || other.weekSpecial == weekSpecial));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScheduleLoaded&&(identical(other.weekOffset, weekOffset) || other.weekOffset == weekOffset)&&(identical(other.week, week) || other.week == week)&&(identical(other.lastSyncedAt, lastSyncedAt) || other.lastSyncedAt == lastSyncedAt)&&(identical(other.syncHealth, syncHealth) || other.syncHealth == syncHealth)&&const DeepCollectionEquality().equals(other._days, _days)&&(identical(other.nextEvent, nextEvent) || other.nextEvent == nextEvent)&&(identical(other.weekSpecial, weekSpecial) || other.weekSpecial == weekSpecial));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,weekOffset,week,lastSyncedAt,const DeepCollectionEquality().hash(_days),nextEvent,weekSpecial);
+int get hashCode => Object.hash(runtimeType,weekOffset,week,lastSyncedAt,syncHealth,const DeepCollectionEquality().hash(_days),nextEvent,weekSpecial);
 
 @override
 String toString() {
-  return 'ScheduleState.loaded(weekOffset: $weekOffset, week: $week, lastSyncedAt: $lastSyncedAt, days: $days, nextEvent: $nextEvent, weekSpecial: $weekSpecial)';
+  return 'ScheduleState.loaded(weekOffset: $weekOffset, week: $week, lastSyncedAt: $lastSyncedAt, syncHealth: $syncHealth, days: $days, nextEvent: $nextEvent, weekSpecial: $weekSpecial)';
 }
 
 
@@ -949,7 +950,7 @@ abstract mixin class $ScheduleLoadedCopyWith<$Res> implements $ScheduleStateCopy
   factory $ScheduleLoadedCopyWith(ScheduleLoaded value, $Res Function(ScheduleLoaded) _then) = _$ScheduleLoadedCopyWithImpl;
 @override @useResult
 $Res call({
- int weekOffset, WeekSchedule week, DateTime lastSyncedAt, List<ScheduleDay> days, NextEvent? nextEvent, SpecialEventWholeWeek? weekSpecial
+ int weekOffset, WeekSchedule week, DateTime lastSyncedAt, ScheduleSyncHealth syncHealth, List<ScheduleDay> days, NextEvent? nextEvent, SpecialEventWholeWeek? weekSpecial
 });
 
 
@@ -966,12 +967,13 @@ class _$ScheduleLoadedCopyWithImpl<$Res>
 
 /// Create a copy of ScheduleState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? weekOffset = null,Object? week = null,Object? lastSyncedAt = null,Object? days = null,Object? nextEvent = freezed,Object? weekSpecial = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? weekOffset = null,Object? week = null,Object? lastSyncedAt = null,Object? syncHealth = null,Object? days = null,Object? nextEvent = freezed,Object? weekSpecial = freezed,}) {
   return _then(ScheduleLoaded(
 weekOffset: null == weekOffset ? _self.weekOffset : weekOffset // ignore: cast_nullable_to_non_nullable
 as int,week: null == week ? _self.week : week // ignore: cast_nullable_to_non_nullable
 as WeekSchedule,lastSyncedAt: null == lastSyncedAt ? _self.lastSyncedAt : lastSyncedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,days: null == days ? _self._days : days // ignore: cast_nullable_to_non_nullable
+as DateTime,syncHealth: null == syncHealth ? _self.syncHealth : syncHealth // ignore: cast_nullable_to_non_nullable
+as ScheduleSyncHealth,days: null == days ? _self._days : days // ignore: cast_nullable_to_non_nullable
 as List<ScheduleDay>,nextEvent: freezed == nextEvent ? _self.nextEvent : nextEvent // ignore: cast_nullable_to_non_nullable
 as NextEvent?,weekSpecial: freezed == weekSpecial ? _self.weekSpecial : weekSpecial // ignore: cast_nullable_to_non_nullable
 as SpecialEventWholeWeek?,

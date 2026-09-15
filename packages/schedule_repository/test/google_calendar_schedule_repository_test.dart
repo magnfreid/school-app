@@ -13,11 +13,30 @@ const _configuredConfig = CalendarConfig(
   serviceAccountKey: _testKey,
 );
 
+/// A mapper-recognized `kind: schedule` event, for delta-sync tests.
+Event _scheduleEvent({
+  required String id,
+  required DateTime start,
+  String? status,
+  String title = 'Delta event',
+}) {
+  return Event(
+    id: id,
+    summary: title,
+    status: status,
+    start: EventDateTime(dateTime: start),
+    extendedProperties: EventExtendedProperties(
+      private: {'kind': 'schedule', 'subjectCode': 'MA', 'severity': 'other'},
+    ),
+  );
+}
+
 /// Scriptable [CalendarEventsSource] double. Records every call and throws
 /// [error] (when set) instead of returning [events]. When [hang] is `true`,
 /// [listEvents] never completes — used to pin timeout behaviour.
 class _FakeCalendarEventsSource implements CalendarEventsSource {
   List<Event> events = const [];
+  String? nextSyncToken;
   Object? error;
   bool hang = false;
   int closeCount = 0;
@@ -25,20 +44,46 @@ class _FakeCalendarEventsSource implements CalendarEventsSource {
   final List<CalendarConfig> configCalls = [];
   final List<DateTime> timeMinCalls = [];
   final List<DateTime> timeMaxCalls = [];
+  int listEventsCallCount = 0;
+
+  /// Events (or deletions, via `status: 'cancelled'`) returned by the next
+  /// [listChanges] call.
+  List<Event> changes = const [];
+
+  /// Error [listChanges] throws when set, instead of returning [changes].
+  Object? changesError;
+
+  /// Sync tokens passed to each [listChanges] call, in order.
+  final List<String> syncTokenCalls = [];
+  int listChangesCallCount = 0;
 
   @override
-  Future<List<Event>> listEvents({
+  Future<CalendarEventsResult> listEvents({
     required CalendarConfig config,
     required DateTime timeMin,
     required DateTime timeMax,
   }) async {
+    listEventsCallCount++;
     configCalls.add(config);
     timeMinCalls.add(timeMin);
     timeMaxCalls.add(timeMax);
-    if (hang) return Completer<List<Event>>().future;
+    if (hang) return Completer<CalendarEventsResult>().future;
     final scriptedError = error;
     if (scriptedError != null) throw scriptedError;
-    return events;
+    return CalendarEventsResult(events: events, nextSyncToken: nextSyncToken);
+  }
+
+  @override
+  Future<CalendarEventsResult> listChanges({
+    required CalendarConfig config,
+    required String syncToken,
+  }) async {
+    listChangesCallCount++;
+    configCalls.add(config);
+    syncTokenCalls.add(syncToken);
+    final scriptedError = changesError;
+    if (scriptedError != null) throw scriptedError;
+    return CalendarEventsResult(events: changes, nextSyncToken: nextSyncToken);
   }
 
   @override
@@ -92,7 +137,7 @@ void main() {
     test('window has 5 consecutive Mondays ascending, anchor at index '
         'windowRadiusInWeeks', () async {
       final anchor = DateTime(2026, 9, 17); // a Thursday, week of Sep 14
-      final window = await repository.fetchWindow(anchor: anchor);
+      final window = (await repository.fetchWindow(anchor: anchor)).weeks;
 
       expect(window, hasLength(2 * ScheduleRepository.windowRadiusInWeeks + 1));
       for (var i = 0; i < window.length; i++) {
@@ -322,6 +367,179 @@ void main() {
       await localRepository.dispose();
 
       expect(localSource.closeCount, 1);
+    });
+
+    test('a second fetchWindow with the same anchor makes no further source '
+        'call and returns the same weeks and the same lastSyncedAt', () async {
+      final anchor = DateTime(2026, 9, 17);
+
+      final first = await repository.fetchWindow(anchor: anchor);
+      final second = await repository.fetchWindow(anchor: anchor);
+
+      expect(source.listEventsCallCount, 1);
+      expect(source.listChangesCallCount, 0);
+      expect(second.weeks, first.weeks);
+      expect(second.lastSyncedAt, first.lastSyncedAt);
+    });
+
+    test(
+      'an anchor in a different ISO week triggers a second listEvents',
+      () async {
+        await repository.fetchWindow(anchor: DateTime(2026, 9, 17));
+        await repository.fetchWindow(anchor: DateTime(2026, 9, 24));
+
+        expect(source.listEventsCallCount, 2);
+      },
+    );
+
+    test('forceSync: true on a warm cache calls listChanges with the stored '
+        'token and does not call listEvents', () async {
+      source.nextSyncToken = 'token-1';
+      final anchor = DateTime(2026, 9, 17);
+      await repository.fetchWindow(anchor: anchor);
+
+      await repository.fetchWindow(anchor: anchor, forceSync: true);
+
+      expect(source.listEventsCallCount, 1);
+      expect(source.listChangesCallCount, 1);
+      expect(source.syncTokenCalls.single, 'token-1');
+    });
+
+    test('a delta adding an event surfaces it in the returned weeks; a '
+        "delta whose entry is status: 'cancelled' removes it", () async {
+      source.nextSyncToken = 'token-2';
+      final anchor = DateTime(2026, 9, 17);
+      await repository.fetchWindow(anchor: anchor);
+
+      source.changes = [
+        _scheduleEvent(id: 'delta-1', start: DateTime(2026, 9, 17, 10)),
+      ];
+      final withDelta = await repository.fetchWindow(
+        anchor: anchor,
+        forceSync: true,
+      );
+      final weekWithDelta =
+          withDelta.weeks[ScheduleRepository.windowRadiusInWeeks];
+      expect(weekWithDelta.events.map((e) => e.id), contains('delta-1'));
+
+      source.changes = [
+        _scheduleEvent(
+          id: 'delta-1',
+          status: 'cancelled',
+          start: DateTime(2026, 9, 17, 10),
+        ),
+      ];
+      final withRemoval = await repository.fetchWindow(
+        anchor: anchor,
+        forceSync: true,
+      );
+      final weekWithRemoval =
+          withRemoval.weeks[ScheduleRepository.windowRadiusInWeeks];
+      expect(
+        weekWithRemoval.events.map((e) => e.id),
+        isNot(contains('delta-1')),
+      );
+    });
+
+    test('forceSync: true when listChanges throws (scripted Exception) '
+        'returns the cached weeks and the unchanged lastSyncedAt, and does '
+        'not throw', () async {
+      var tick = 0;
+      final clockRepository = GoogleCalendarScheduleRepository(
+        configRepository: configRepository,
+        eventsSource: source,
+        now: () => DateTime(2026, 9, 17, 8, 0, tick++),
+      );
+      addTearDown(clockRepository.dispose);
+
+      source.nextSyncToken = 'token-3';
+      final anchor = DateTime(2026, 9, 17);
+      final first = await clockRepository.fetchWindow(anchor: anchor);
+
+      source.changesError = Exception('network blip');
+      final afterFailedSync = await clockRepository.fetchWindow(
+        anchor: anchor,
+        forceSync: true,
+      );
+
+      expect(afterFailedSync.weeks, first.weeks);
+      expect(afterFailedSync.lastSyncedAt, first.lastSyncedAt);
+    });
+
+    test('forceSync: true when listChanges throws a 410 clears the token, '
+        'issues a listEvents full pull, advances lastSyncedAt, and throws '
+        'nothing — the order-dependent pin: without the 410 intercept the '
+        'error is swallowed by the warm-path catch and the cache goes '
+        'permanently stale behind a dead token', () async {
+      var tick = 0;
+      final clockRepository = GoogleCalendarScheduleRepository(
+        configRepository: configRepository,
+        eventsSource: source,
+        now: () => DateTime(2026, 9, 17, 8, 0, tick++),
+      );
+      addTearDown(clockRepository.dispose);
+
+      source.nextSyncToken = 'token-4';
+      final anchor = DateTime(2026, 9, 17);
+      final first = await clockRepository.fetchWindow(anchor: anchor);
+
+      source.changesError = DetailedApiRequestError(410, 'Gone');
+      final afterGone = await clockRepository.fetchWindow(
+        anchor: anchor,
+        forceSync: true,
+      );
+
+      expect(source.listEventsCallCount, 2);
+      expect(afterGone.lastSyncedAt.isAfter(first.lastSyncedAt), isTrue);
+    });
+
+    test('a listEvents response with nextSyncToken == null makes the next '
+        'forceSync: true issue a full pull, not a listChanges', () async {
+      source.nextSyncToken = null;
+      final anchor = DateTime(2026, 9, 17);
+      await repository.fetchWindow(anchor: anchor);
+
+      await repository.fetchWindow(anchor: anchor, forceSync: true);
+
+      expect(source.listEventsCallCount, 2);
+      expect(source.listChangesCallCount, 0);
+    });
+
+    test('a warm cache built for one calendar config is not reused once '
+        'configChanges emits a different config — subscribing to a '
+        'different calendar mid-session must not keep serving the previous '
+        "one's cached events", () async {
+      final anchor = DateTime(2026, 9, 17);
+      await repository.fetchWindow(anchor: anchor);
+      expect(source.listEventsCallCount, 1);
+      expect(source.configCalls.last.calendarId, 'cal-1');
+
+      configRepository.emit(
+        const CalendarConfig(calendarId: 'cal-2', serviceAccountKey: _testKey),
+      );
+
+      await repository.fetchWindow(anchor: anchor);
+
+      expect(source.listEventsCallCount, 2);
+      expect(source.listChangesCallCount, 0);
+      expect(source.configCalls.last.calendarId, 'cal-2');
+    });
+
+    test('a cold-cache listEvents failure still throws the mapped '
+        'ScheduleException and leaves the repository cold (a following '
+        'successful fetchWindow issues a new listEvents)', () async {
+      source.error = Exception('network down');
+      final anchor = DateTime(2026, 9, 17);
+
+      await expectLater(
+        () => repository.fetchWindow(anchor: anchor),
+        throwsA(isA<ScheduleException>()),
+      );
+
+      source.error = null;
+      await repository.fetchWindow(anchor: anchor);
+
+      expect(source.listEventsCallCount, 2);
     });
   });
 }

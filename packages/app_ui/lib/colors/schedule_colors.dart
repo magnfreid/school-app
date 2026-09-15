@@ -50,6 +50,7 @@ class ScheduleColors extends ThemeExtension<ScheduleColors> {
     required this.dayName,
     required this.provLabel,
     required this.syncOk,
+    required this.syncWarning,
     required this.bannerTeal,
     required this.bannerAmber,
     required this.bannerPurple,
@@ -64,6 +65,7 @@ class ScheduleColors extends ThemeExtension<ScheduleColors> {
     dayName: Color(0xFFC9C6CF),
     provLabel: Color(0xFFFF8A80),
     syncOk: Color(0xFF5C9C72),
+    syncWarning: Color(0xFFF5C46B),
     bannerTeal: SpecialBannerColors(
       background: Color(0xFF12514A),
       label: Color(0xFF7FD9C4),
@@ -106,6 +108,9 @@ class ScheduleColors extends ThemeExtension<ScheduleColors> {
   /// Sync dot, healthy.
   final Color syncOk;
 
+  /// Sync dot, stale.
+  final Color syncWarning;
+
   /// Teal special-event banner preset.
   final SpecialBannerColors bannerTeal;
 
@@ -128,6 +133,7 @@ class ScheduleColors extends ThemeExtension<ScheduleColors> {
     Color? dayName,
     Color? provLabel,
     Color? syncOk,
+    Color? syncWarning,
     SpecialBannerColors? bannerTeal,
     SpecialBannerColors? bannerAmber,
     SpecialBannerColors? bannerPurple,
@@ -140,6 +146,7 @@ class ScheduleColors extends ThemeExtension<ScheduleColors> {
       dayName: dayName ?? this.dayName,
       provLabel: provLabel ?? this.provLabel,
       syncOk: syncOk ?? this.syncOk,
+      syncWarning: syncWarning ?? this.syncWarning,
       bannerTeal: bannerTeal ?? this.bannerTeal,
       bannerAmber: bannerAmber ?? this.bannerAmber,
       bannerPurple: bannerPurple ?? this.bannerPurple,
@@ -157,6 +164,7 @@ class ScheduleColors extends ThemeExtension<ScheduleColors> {
       dayName: Color.lerp(dayName, other.dayName, t)!,
       provLabel: Color.lerp(provLabel, other.provLabel, t)!,
       syncOk: Color.lerp(syncOk, other.syncOk, t)!,
+      syncWarning: Color.lerp(syncWarning, other.syncWarning, t)!,
       bannerTeal: SpecialBannerColors.lerp(bannerTeal, other.bannerTeal, t),
       bannerAmber: SpecialBannerColors.lerp(bannerAmber, other.bannerAmber, t),
       bannerPurple: SpecialBannerColors.lerp(

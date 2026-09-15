@@ -1,3 +1,4 @@
+import 'models/schedule_window.dart';
 import 'models/week_schedule.dart';
 import 'mock_week.dart';
 import 'schedule_exception.dart';
@@ -19,16 +20,21 @@ class FakeScheduleRepository implements ScheduleRepository {
   /// the just-ended Mon–Fri week — [today] is the escape hatch for tests that
   /// need a fixed day.
   ///
-  /// When [fetchError] is set, [fetchWindow] throws it instead of
-  /// succeeding. [fetchDelay] holds each [fetchWindow] call open, which is
-  /// what lets a test observe behaviour that only exists while a request is
-  /// in flight.
+  /// [now] defaults to [DateTime.now]; used only to compute [lastSyncedAt]
+  /// when it is left null. When [fetchError] is set, [fetchWindow] throws it
+  /// instead of succeeding. [fetchDelay] holds each [fetchWindow] call open,
+  /// which is what lets a test observe behaviour that only exists while a
+  /// request is in flight.
   FakeScheduleRepository({
     DateTime? today,
     WeekSchedule? week,
+    DateTime Function()? now,
     this.fetchError,
     this.fetchDelay = Duration.zero,
-  }) : week = week ?? mockWeekSchedule(today: today ?? DateTime.now());
+  }) : week = week ?? mockWeekSchedule(today: today ?? DateTime.now()),
+       _now = now ?? DateTime.now;
+
+  final DateTime Function() _now;
 
   /// The one week this fake holds content for.
   final WeekSchedule week;
@@ -40,19 +46,32 @@ class FakeScheduleRepository implements ScheduleRepository {
   /// mid-run.
   ScheduleException? fetchError;
 
+  /// Overrides the `lastSyncedAt` every fetch reports. When null, `now()` is
+  /// used — i.e. the fake always looks freshly synced. Mutable so a test can
+  /// age it mid-run.
+  DateTime? lastSyncedAt;
+
   /// Anchors passed to each [fetchWindow] call, in order.
   final List<DateTime> fetchCalls = [];
 
+  /// The `forceSync` flag of each [fetchWindow] call, in order. Parallel to
+  /// [fetchCalls].
+  final List<bool> forceSyncCalls = [];
+
   @override
-  Future<List<WeekSchedule>> fetchWindow({required DateTime anchor}) async {
+  Future<ScheduleWindow> fetchWindow({
+    required DateTime anchor,
+    bool forceSync = false,
+  }) async {
     fetchCalls.add(anchor);
+    forceSyncCalls.add(forceSync);
     if (fetchDelay > Duration.zero) await Future<void>.delayed(fetchDelay);
     final error = fetchError;
     if (error != null) throw error;
 
     final anchorWeekStart = startOfIsoWeek(anchor);
     const radius = ScheduleRepository.windowRadiusInWeeks;
-    return [
+    final weeks = [
       for (var offset = -radius; offset <= radius; offset++)
         _weekAt(
           DateTime(
@@ -62,6 +81,7 @@ class FakeScheduleRepository implements ScheduleRepository {
           ),
         ),
     ];
+    return ScheduleWindow(weeks: weeks, lastSyncedAt: lastSyncedAt ?? _now());
   }
 
   WeekSchedule _weekAt(DateTime weekStart) {
