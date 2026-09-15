@@ -11,5 +11,6 @@ export 'src/models/schedule_event.dart';
 export 'src/models/special_event.dart';
 export 'src/models/week_schedule.dart';
 export 'src/fake_schedule_repository.dart';
+export 'src/google_calendar_schedule_repository.dart';
 export 'src/schedule_exception.dart';
 export 'src/schedule_repository.dart';
