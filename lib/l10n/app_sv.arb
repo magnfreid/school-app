@@ -24,6 +24,7 @@
   "scheduleNavNextWeekTooltip": "Nästa vecka",
   "scheduleSettingsTooltip": "Inställningar",
   "scheduleAlternateViewTooltip": "Alternativ vy",
+  "scheduleReturnToTodayLabel": "Till idag",
   "setupTitle": "Kalenderinställning",
   "setupIntro": "Klistra in kalender-ID och tjänstekontots nyckel. Båda sparas endast på den här enheten.",
   "setupCalendarIdLabel": "Kalender-ID",

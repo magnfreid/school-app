@@ -104,6 +104,9 @@ class AppLocalizationsSv extends AppLocalizations {
   String get scheduleAlternateViewTooltip => 'Alternativ vy';
 
   @override
+  String get scheduleReturnToTodayLabel => 'Till idag';
+
+  @override
   String get setupTitle => 'Kalenderinställning';
 
   @override
