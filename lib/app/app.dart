@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:school_app/app/cubit/calendar_config_cubit.dart';
 import 'package:school_app/app/cubit/theme_cubit.dart';
 import 'package:school_app/app/router/app_router.dart';
+import 'package:school_app/app/widgets/display_activity_detector.dart';
 import 'package:school_app/l10n/app_localizations.dart';
 import 'package:school_app/l10n/extensions/app_localizations_extension.dart';
 import 'package:go_router/go_router.dart';
@@ -58,6 +59,8 @@ class _AppState extends State<App> {
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: _router,
       debugShowCheckedModeBanner: false,
+      builder: (context, child) =>
+          DisplayActivityDetector(child: child ?? const SizedBox.shrink()),
     );
   }
 }

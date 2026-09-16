@@ -12,6 +12,7 @@ workspace:
   - packages/bloc_utils
   - packages/schedule_repository
   - packages/calendar_config_repository
+  - packages/display_repository
 
 dependencies:
   flutter:
@@ -30,6 +31,8 @@ dependencies:
     path: ./packages/bloc_utils
   calendar_config_repository:
     path: ./packages/calendar_config_repository
+  display_repository:
+    path: ./packages/display_repository
   schedule_repository:
     path: ./packages/schedule_repository
 

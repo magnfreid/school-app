@@ -12,12 +12,18 @@ repository/fake pattern, routing, theming, localization, and testing.
 lib/
   app/
     app.dart            # MaterialApp, theme + l10n wiring
+    bloc/
+      display_bloc.dart   # Wakelock/dim idle-cycle state machine
+      display_event.dart  # display_bloc.dart's event union
+      display_state.dart  # display_bloc.dart's state union
     cubit/
       calendar_config_cubit.dart  # CalendarConfig gate state, mirrors the repo
       theme_cubit.dart  # ThemeMode, cycled from the app bar
     router/
       app_router.dart   # GoRouter construction, config-gate redirect
       routes.dart       # Route definitions, path/name constants
+    widgets/
+      display_activity_detector.dart  # Feeds touch/lifecycle into DisplayBloc
   l10n/
     app_en.arb          # English (source of truth)
     app_sv.arb          # Swedish
@@ -31,6 +37,7 @@ packages/
   app_ui/               # Pre-built design system. See below.
   bloc_utils/           # Event transformers; re-exports bloc_concurrency
   calendar_config_repository/  # CalendarConfigRepository + InMemory and Fake impls
+  display_repository/   # DisplayRepository (wakelock/brightness/power) + Fake impl
   schedule_repository/  # ScheduleRepository + Fake impl and week math
 
 test/
